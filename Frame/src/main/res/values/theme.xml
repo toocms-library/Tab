@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 自定义ActionBar主题 -->
+    <style name="AppTheme.CustomActionBar" parent="@style/AppTheme">
+        <!--Menu的文字颜色-->
+        <item name="actionMenuTextColor">@color/action_menu_color</item>
+        <!--Menu的文字样式-->
+        <item name="android:actionMenuTextAppearance">@style/MenuTextAppearance</item>
+        <!--Title的文字样式-->
+        <item name="titleTextAppearance">@style/TitleTextAppearance</item>
+        <!--返回按钮样式-->
+        <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationButtonStyle</item>
+        <!--MenuItem按下样式-->
+        <item name="selectableItemBackground">@drawable/action_button_bg</item>
+    </style>
+
+    <style name="MenuTextAppearance">
+        <item name="android:textColor">@color/action_menu_color</item>
+        <item name="android:textSize">@dimen/action_menu_size</item>
+    </style>
+
+    <style name="TitleTextAppearance">
+        <item name="android:textSize">@dimen/action_title_size</item>
+        <item name="android:textColor">@color/action_title_color</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="ToolbarNavigationButtonStyle" parent="@style/Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:minHeight">@dimen/action_height_size</item>
+        <item name="android:background">@drawable/action_button_bg</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="AppTheme.Translucent" parent="AppBaseTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme.Translucent.NoTitle" parent="AppTheme.Translucent">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>

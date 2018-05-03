@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="background_tab_pressed">#6633B5E5</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="dark">#2D2D2D</color>
+    <color name="orange">#FF7C39</color>
+    <color name="gray">#E7E7E7</color>
+    <color name="red">#ff0000</color>
+    <color name="blue">#0079FF</color>
+    <color name="black10">#19000000</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="divider">#E3E3E3</color>
+    <color name="darkgreen">#024442</color>
+
+    <!-- fbutton -->
+    <color name="fbutton_default_color">#3eadeb</color>
+    <color name="fbutton_default_shadow_color">#ff3493c8</color>
+    <!--uCrop Activity-->
+    <color name="ucrop_color_toolbar">#21282C</color>
+    <color name="ucrop_color_statusbar">#21282C</color>
+    <color name="ucrop_color_toolbar_widget">#fff</color>
+    <color name="ucrop_color_widget">#000</color>
+    <color name="ucrop_color_widget_active">#FF6E40</color>
+    <color name="ucrop_color_widget_background">#fff</color>
+    <color name="ucrop_color_widget_text">#000</color>
+    <color name="ucrop_color_progress_wheel_line">#808080</color>
+    <color name="ucrop_color_crop_background">#000</color>
+    <!--Crop View-->
+    <color name="ucrop_color_default_crop_grid">#80ffffff</color>
+    <color name="ucrop_color_default_crop_frame">#ffffff</color>
+    <color name="ucrop_color_default_dimmed">#8c000000</color>
+    <color name="ucrop_color_default_logo">#4f212121</color>
+
+    <!-- APP标题文字颜色 -->
+    <color name="app_title_color">#060606</color>
+    <!-- APP副标题文字颜色 -->
+    <color name="app_subtitle_color">#868686</color>
+    <!--标题栏-->
+    <color name="action_bg">#21282C</color>
+    <color name="action_title_color">@color/white</color>
+    <color name="action_menu_color">@color/white</color>
+    <!--APP主色调-->
+    <color name="clr_main">#F69537</color>
+    <color name="clr_progress">@color/clr_main</color>
+</resources>
