@@ -7,10 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import com.umeng.analytics.pro.x;
-
-import org.xutils.common.util.LogUtil;
-
 import cn.zero.android.common.view.banner.adapter.CBPageAdapter;
 import cn.zero.android.common.view.banner.listener.OnPageChangeListener;
 import cn.zero.android.common.view.banner.view.CBLoopViewPager;

@@ -21,6 +21,7 @@ import com.toocms.frame.listener.LocationListener;
 import com.toocms.frame.tool.AppManager;
 import com.toocms.frame.tool.Toolkit;
 import com.toocms.frame.ui.BuildConfig;
+import com.umeng.commonsdk.UMConfigure;
 import com.zhy.autolayout.config.AutoLayoutConifg;
 
 import org.xutils.x;
@@ -109,6 +110,12 @@ public class WeApplication extends Application {
         initOkGo();
         // 初始化崩溃异常捕捉器
         CrashReport.init(this);
+        // 初始化Umeng
+        UMConfigure.init(this,
+                x.dataSet().getAppConfig().getUmengAppkey(),
+                "Umeng",
+                UMConfigure.DEVICE_TYPE_PHONE,
+                x.dataSet().getAppConfig().getUmengPushSecret());
         // 验证可用性
         VerificationService.getInstance().verification();
         // 初始化数据线程
@@ -222,11 +229,21 @@ public class WeApplication extends Application {
 
     /**
      * 设置用户信息
+     *
+     * @param user
      */
     public void setUserInfo(IUser user) {
         this.user = user;
         String json = GSONUtils.toJson(user);
         PreferencesUtils.putString(this, PREF_USERINFO, json);
+    }
+
+    /**
+     * 清除用户信息
+     */
+    public void clearUserInfo() {
+        user = null;
+        PreferencesUtils.putString(this, PREF_USERINFO, "");
     }
 
     /**

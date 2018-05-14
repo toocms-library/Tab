@@ -173,6 +173,10 @@ public class ImageUtils {
     public static File compressImage(String imagePath, int reqWidth, int reqHeight) {
         try {
             Bitmap bitmap = compressBitmapFromFile(imagePath, reqWidth, reqHeight);
+            File directory = new File(FileManager.getCompressFilePath());
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
             File file = new File(FileManager.getCompressFilePath() + System.currentTimeMillis() + ".jpg");
             file.createNewFile();
             FileOutputStream fos = new FileOutputStream(file);

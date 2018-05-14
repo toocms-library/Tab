@@ -214,8 +214,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
         // 管理Activity
         AppManager.instance = this;
         AppManager.getInstance().addActivity(this);
-//        // 验证框架可用性
-//        VerificationService.getInstance().verification();
         // 竖屏锁定
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.aty_base);

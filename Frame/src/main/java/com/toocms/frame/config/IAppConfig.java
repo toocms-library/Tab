@@ -14,6 +14,13 @@ public interface IAppConfig {
     public boolean isShowTitleCenter();
 
     /**
+     * 是否使用SnackBar
+     *
+     * @return
+     */
+    public boolean isUseSnackBar();
+
+    /**
      * 获取项目文件夹名字
      *
      * @return
@@ -21,11 +28,18 @@ public interface IAppConfig {
     public String getProgectFolder();
 
     /**
-     * 是否使用SnackBar
+     * 获取友盟的AppKey
      *
      * @return
      */
-    public boolean isUseSnackBar();
+    public String getUmengAppkey();
+
+    /**
+     * 获取友盟推送服务的Secret
+     *
+     * @return
+     */
+    public String getUmengPushSecret();
 
     /**
      * 获取导航加载图片
