@@ -14,5 +14,4 @@
         android:icon="@drawable/ucrop_vector_loader_animated"
         android:title=""
         app:showAsAction="ifRoom" />
-
 </menu>

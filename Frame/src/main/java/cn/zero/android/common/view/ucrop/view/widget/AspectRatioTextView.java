@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import com.toocms.frame.ui.R;
 
+import java.util.Locale;
+
+import cn.zero.android.common.view.ucrop.model.AspectRatio;
 import cn.zero.android.common.view.ucrop.view.CropImageView;
 
 /**
@@ -61,6 +64,20 @@ public class AspectRatioTextView extends TextView {
     public void setActiveColor(@ColorInt int activeColor) {
         applyActiveColor(activeColor);
         invalidate();
+    }
+
+    public void setAspectRatio(@NonNull AspectRatio aspectRatio) {
+        mAspectRatioTitle = aspectRatio.getAspectRatioTitle();
+        mAspectRatioX = aspectRatio.getAspectRatioX();
+        mAspectRatioY = aspectRatio.getAspectRatioY();
+
+        if (mAspectRatioX == CropImageView.SOURCE_IMAGE_ASPECT_RATIO || mAspectRatioY == CropImageView.SOURCE_IMAGE_ASPECT_RATIO) {
+            mAspectRatio = CropImageView.SOURCE_IMAGE_ASPECT_RATIO;
+        } else {
+            mAspectRatio = mAspectRatioX / mAspectRatioY;
+        }
+
+        setTitle();
     }
 
     public float getAspectRatio(boolean toggleRatio) {
@@ -140,7 +157,7 @@ public class AspectRatioTextView extends TextView {
         if (!TextUtils.isEmpty(mAspectRatioTitle)) {
             setText(mAspectRatioTitle);
         } else {
-            setText(String.format("%d:%d", (int) mAspectRatioX, (int) mAspectRatioY));
+            setText(String.format(Locale.US, "%d:%d", (int) mAspectRatioX, (int) mAspectRatioY));
         }
     }
 

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--Padding for both views must be equal (may be absent too) -->
+    <!-- Padding for both views can be different -->
 
     <cn.zero.android.common.view.ucrop.view.GestureCropImageView
         android:id="@+id/image_view_crop"

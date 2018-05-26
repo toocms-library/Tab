@@ -69,6 +69,7 @@ import butterknife.ButterKnife;
 import cn.zero.android.common.permission.PermissionGen;
 import cn.zero.android.common.util.ListUtils;
 import cn.zero.android.common.view.autolayout.AutoToolbar;
+import cn.zero.android.common.view.ucrop.model.CropType;
 
 /**
  * 页面基类
@@ -740,9 +741,20 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
      * @param ratio 纵横比例xy
      */
     public void startSelectSignImageAty(int... ratio) {
+        startSelectSignImageAtyByCropType(CropType.TYPE_SQUARE, ratio);
+    }
+
+    /**
+     * 启动单图选择页面并指定裁剪方式
+     *
+     * @param cropType
+     * @param ratio
+     */
+    public void startSelectSignImageAtyByCropType(int cropType, int... ratio) {
         Bundle bundle = new Bundle();
         bundle.putInt(SelectImageAty.EXTRA_SELECT_MODE, SelectImageAty.MODE_SINGLE);
-        if (ratio != null && ratio.length != 0) {
+        bundle.putInt(SelectImageAty.EXTRA_CROP_TYPE, cropType);
+        if (cropType == CropType.TYPE_SQUARE && ratio != null && ratio.length != 0) {
             bundle.putFloat(SelectImageAty.EXTRA_ASPECT_RATIO_X, ratio[0]);
             bundle.putFloat(SelectImageAty.EXTRA_ASPECT_RATIO_Y, ratio[1]);
         }

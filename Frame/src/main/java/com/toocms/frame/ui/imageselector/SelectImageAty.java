@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -49,6 +50,7 @@ import cn.zero.android.common.util.FileManager;
 import cn.zero.android.common.util.ImageUtils;
 import cn.zero.android.common.util.ListUtils;
 import cn.zero.android.common.view.ucrop.UCrop;
+import cn.zero.android.common.view.ucrop.model.CropType;
 
 /**
  * 选择图片
@@ -76,6 +78,11 @@ public class SelectImageAty extends BaseActivity {
      * 是否显示相机，默认显示
      */
     public static final String EXTRA_SHOW_CAMERA = "show_camera";
+
+    /**
+     * 裁剪类型，默认为正方形
+     */
+    public static final String EXTRA_CROP_TYPE = "extra_crop_type";
 
     /**
      * 裁剪比例-横向，默认为1
@@ -137,7 +144,6 @@ public class SelectImageAty extends BaseActivity {
 
     private Thread thread; // 图片压缩处理线程
     private File tmpFile;
-    private File outPutFile; // 压缩之后的文件
 
     private boolean hasFolderGened = false;
     private boolean isShowCamera = false;
@@ -145,6 +151,8 @@ public class SelectImageAty extends BaseActivity {
     private float ratioY;
     private int desireImageCount;
     private int mode;
+    // 裁剪类型
+    private int cropType = CropType.TYPE_SQUARE;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -315,6 +323,8 @@ public class SelectImageAty extends BaseActivity {
         if (mode == MODE_MULTI && intent.hasExtra(EXTRA_DEFAULT_SELECTED_LIST)) {
             resultList = intent.getStringArrayListExtra(EXTRA_DEFAULT_SELECTED_LIST);
         }
+        // 裁剪类型
+        cropType = intent.getIntExtra(EXTRA_CROP_TYPE, CropType.TYPE_SQUARE);
         // 裁剪比例
         ratioX = intent.getFloatExtra(EXTRA_ASPECT_RATIO_X, 1);
         ratioY = intent.getFloatExtra(EXTRA_ASPECT_RATIO_Y, 1);
@@ -545,16 +555,23 @@ public class SelectImageAty extends BaseActivity {
 
     // 开始裁剪（只限于单选）
     private void beginCrop(File sourceFile) {
-        if (outPutFile == null) {
-            try {
-                outPutFile = new File(FileManager.getCompressFilePath() + System.currentTimeMillis() + ".jpg");
-                outPutFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        UCrop uCrop = UCrop.of(Uri.fromFile(sourceFile), Uri.fromFile(new File(FileManager.getCompressFilePath(), System.currentTimeMillis() + ".jpg")));
+        UCrop.Options options = new UCrop.Options();
+        switch (cropType) {
+            case CropType.TYPE_FREESTYLE: // 自由选择
+                options.setFreeStyleCropEnabled(true);
+                break;
+            case CropType.TYPE_ORIGIN: // 图片本身尺寸
+                uCrop.useSourceImageAspectRatio();
+                break;
+            case CropType.TYPE_SQUARE: // 正方形
+                uCrop.withAspectRatio(ratioX, ratioY);
+                break;
         }
-        Uri outputUri = Uri.fromFile(outPutFile);
-        UCrop.of(Uri.fromFile(sourceFile), outputUri).withAspectRatio(ratioX, ratioY).start(this);
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        options.setCompressionQuality(80);
+        uCrop.withOptions(options);
+        uCrop.start(this);
     }
 
     // 保存裁剪之后的图片数据

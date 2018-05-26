@@ -37,7 +37,8 @@ public class LoginStatus {
         PreferencesUtils.putBoolean(x.app(), PREF_KEY_LOGIN_STATE, isLogin);
         // 打开用户统计分析
         if (isLogin) {
-            if (!StringUtils.isEmpty(userId[0])) MobclickAgent.onProfileSignIn(userId[0]);
+            if (userId != null && userId.length != 0 && !StringUtils.isEmpty(userId[0]))
+                MobclickAgent.onProfileSignIn(userId[0]);
         } else {
             // 清除用户信息
             WeApplication.getInstance().clearUserInfo();

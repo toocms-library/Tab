@@ -80,7 +80,6 @@ public class ConvenientBanner<T> extends RelativeLayout {
         adSwitchTask = new AdSwitchTask(this);
     }
 
-
     public ConvenientBanner setPages(CBViewHolderCreator holderCreator, List<T> datas) {
         this.mDatas = datas;
         pageAdapter = new CBPageAdapter(holderCreator, mDatas, canLoop);
@@ -93,6 +92,17 @@ public class ConvenientBanner<T> extends RelativeLayout {
         cbLoopScaleHelper.attachToRecyclerView(viewPager);
 
         return this;
+    }
+
+    public ConvenientBanner setCanLoop(boolean canLoop) {
+        this.canLoop = canLoop;
+        pageAdapter.setCanLoop(canLoop);
+        notifyDataSetChanged();
+        return this;
+    }
+
+    public boolean isCanLoop() {
+        return canLoop;
     }
 
     /**
@@ -220,10 +230,6 @@ public class ConvenientBanner<T> extends RelativeLayout {
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, align == PageIndicatorAlign.CENTER_HORIZONTAL ? RelativeLayout.TRUE : 0);
         loPageTurningPoint.setLayoutParams(layoutParams);
         return this;
-    }
-
-    public void setCanLoop(boolean canLoop) {
-        this.canLoop = canLoop;
     }
 
     /***

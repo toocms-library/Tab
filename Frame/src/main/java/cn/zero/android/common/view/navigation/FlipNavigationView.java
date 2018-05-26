@@ -35,7 +35,7 @@ public class FlipNavigationView<T> extends ConvenientBanner {
 
     public FlipNavigationView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setCanLoop(false);
+
     }
 
     public void setPage_size(int page_size) {
@@ -74,6 +74,7 @@ public class FlipNavigationView<T> extends ConvenientBanner {
         }, adapters)
                 .setPageIndicator(new int[]{R.drawable.dot_normal, R.drawable.dot_focused})
                 .setPageIndicatorAlign(PageIndicatorAlign.CENTER_HORIZONTAL);
+        setCanLoop(false);
         // 根据数据源设置高度以及是否显示圆点
         // item的高度
         int itemHeight = AutoUtils.getPercentHeightSize(190);
