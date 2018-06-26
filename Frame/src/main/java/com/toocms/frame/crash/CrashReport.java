@@ -102,7 +102,7 @@ public class CrashReport implements Thread.UncaughtExceptionHandler {
             }
         }.start();
         try {
-            CrashLogStore.saveLogToFile(mApp, ex, thread);
+            CrashLogStore.saveLogToFile(mApp, null, ex, thread);
         } catch (IOException e) {
             Log.e(CrashConfig.TAG, "Save crash log failed. ", e);
         }

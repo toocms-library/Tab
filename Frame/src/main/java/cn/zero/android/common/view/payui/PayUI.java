@@ -20,8 +20,9 @@ import com.toocms.frame.ui.BaseFragment;
 
 public class PayUI {
 
-    public static final void showPayUI(String content, PayPwdView.InputCallBack callBack) {
+    public static final void showPayUI(String title, String content, PayPwdView.InputCallBack callBack) {
         Bundle bundle = new Bundle();
+        bundle.putString(PayFragment.EXTRA_TITLE, title);
         bundle.putString(PayFragment.EXTRA_CONTENT, content);
         PayFragment fragment = new PayFragment();
         fragment.setArguments(bundle);

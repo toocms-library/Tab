@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.toocms.frame.ui.R;
 
+import cn.zero.android.common.util.StringUtils;
+
 /**
  * 输入支付密码封装类
  * Author：Zero
@@ -24,6 +26,7 @@ import com.toocms.frame.ui.R;
 
 public class PayFragment extends DialogFragment {
 
+    public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String EXTRA_CONTENT = "EXTRA_CONTENT";
 
     private PayPwdView payPwdView;
@@ -54,12 +57,18 @@ public class PayFragment extends DialogFragment {
     private void initView(Dialog dialog) {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            TextView tv_content = (TextView) dialog.findViewById(R.id.tv_content);
-            tv_content.setText(bundle.getString(EXTRA_CONTENT));
+            if (bundle.containsKey(EXTRA_TITLE) && !StringUtils.isEmpty(bundle.getString(EXTRA_TITLE))) {
+                TextView title = dialog.findViewById(R.id.pay_title);
+                title.setText(bundle.getString(EXTRA_TITLE));
+            }
+            if (bundle.containsKey(EXTRA_CONTENT) && !StringUtils.isEmpty(bundle.getString(EXTRA_CONTENT))) {
+                TextView content = dialog.findViewById(R.id.pay_content);
+                content.setText(bundle.getString(EXTRA_CONTENT));
+            }
         }
 
-        payPwdView = (PayPwdView) dialog.findViewById(R.id.payPwdView);
-        PwdInputMethodView inputMethodView = (PwdInputMethodView) dialog.findViewById(R.id.inputMethodView);
+        payPwdView = dialog.findViewById(R.id.payPwdView);
+        PwdInputMethodView inputMethodView = dialog.findViewById(R.id.inputMethodView);
         payPwdView.setInputMethodView(inputMethodView);
         payPwdView.setInputCallBack(inputCallBack);
 

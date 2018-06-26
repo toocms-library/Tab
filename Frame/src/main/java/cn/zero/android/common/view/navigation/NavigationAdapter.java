@@ -41,13 +41,15 @@ class NavigationAdapter<T> extends BaseAdapter {
 
     private int index; // 页数下标
     private int page_size;
+    private boolean isCoerciveCircle; // 是否强制显示圆形图片
 
-    public NavigationAdapter(Context context, List<T> list, String[] keys, int index, int page_size) {
+    public NavigationAdapter(Context context, RequestManager glide, List<T> list, String[] keys, int index, int page_size, boolean isCoerciveCircle) {
         this.list = list;
         this.keys = keys;
         this.index = index;
         this.page_size = page_size;
-        glide = Glide.with(context);
+        this.glide = glide;
+        this.isCoerciveCircle = isCoerciveCircle;
         layoutInflater = LayoutInflater.from(context);
     }
 
@@ -90,10 +92,15 @@ class NavigationAdapter<T> extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         String uri = getValue(getItem(position), keys[0]);
-        if (Toolkit.isUrl(uri))
-            ImageLoader.loadUrl2Image(glide, uri, viewHolder.imageView, x.dataSet().getAppConfig().getNavigationLoadingImage());
-        else
-            ImageLoader.loadResId2Image(glide, Integer.parseInt(uri), viewHolder.imageView, x.dataSet().getAppConfig().getNavigationLoadingImage());
+        if (Toolkit.isUrl(uri)) {
+            if (isCoerciveCircle)
+                ImageLoader.loadUrl2CircleImage(glide, uri, viewHolder.imageView, 0);
+            else ImageLoader.loadUrl2Image(glide, uri, viewHolder.imageView, 0);
+        } else {
+            if (isCoerciveCircle)
+                ImageLoader.loadResId2CircleImage(glide, Integer.parseInt(uri), viewHolder.imageView, 0);
+            else ImageLoader.loadResId2Image(glide, Integer.parseInt(uri), viewHolder.imageView, 0);
+        }
         viewHolder.textView.setText(getValue(getItem(position), keys[1]));
         // 设置监听
         convertView.setOnClickListener(new View.OnClickListener() {

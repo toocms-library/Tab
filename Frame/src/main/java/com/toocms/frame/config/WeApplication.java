@@ -116,6 +116,8 @@ public class WeApplication extends Application {
                 "Umeng",
                 UMConfigure.DEVICE_TYPE_PHONE,
                 x.dataSet().getAppConfig().getUmengPushSecret());
+        // 初始化第三方Jar包
+        x.dataSet().getAppConfig().initJarForWeApplication(this);
         // 验证可用性
         VerificationService.getInstance().verification();
         // 初始化数据线程
@@ -272,7 +274,9 @@ public class WeApplication extends Application {
     }
 
     /**
-     * 实位回调监听
+     * 定位回调监听
+     * <p>
+     * 将一些主要信息存在{@link #locationInfo}中，可通过{@link #getLocationInfo()}获取该Map，再通过{@link Constants}类中常量字段获取数据
      */
     private class LocListener implements BDLocationListener {
 

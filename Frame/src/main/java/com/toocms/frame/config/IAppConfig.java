@@ -42,9 +42,7 @@ public interface IAppConfig {
     public String getUmengPushSecret();
 
     /**
-     * 获取导航加载图片
-     *
-     * @return
+     * 在WeApplication中做第三方Jar包的初始化操作
      */
-    public int getNavigationLoadingImage();
+    public void initJarForWeApplication(WeApplication application);
 }

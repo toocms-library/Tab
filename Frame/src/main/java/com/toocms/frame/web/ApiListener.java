@@ -121,9 +121,9 @@ public abstract class ApiListener<T> extends AbsCallback<T> {
     public void onException(Call call, Response response, Throwable e) {
         Object tag = call.request().tag();
         if (tag instanceof BaseActivity) {
-            ((BaseActivity) tag).onException(e);
+            ((BaseActivity) tag).onException(call.request().toString(), e);
         } else if (tag instanceof BaseFragment) {
-            ((BaseFragment) tag).onException(e);
+            ((BaseFragment) tag).onException(call.request().toString(), e);
         } else {
             LogUtil.e("Application");
         }

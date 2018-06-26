@@ -3,7 +3,7 @@
 
     <string name="error_refresh">Error, Please Click Refresh</string>
     <string name="network_anomaly">Network Error, Please Try Again</string>
-    <string name="server_unknow_error">Network Error, Please Try Again</string>
+    <string name="server_unknow_error">System Abnormal, Please Submit Feedback To Help Us Solve The Problem Quickly</string>
 
     <!--更新-->
     <string name="update_newest">It\'s The Latest Version</string>

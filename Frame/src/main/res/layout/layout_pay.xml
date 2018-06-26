@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
         android:layout_marginTop="100dp"
+        android:layout_marginRight="40dp"
         android:background="@drawable/shape_pay"
         android:orientation="vertical"
         android:paddingBottom="25dp">
@@ -20,6 +20,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/pay_title"
                 style="@style/style_black_normal_text"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
@@ -40,7 +41,7 @@
         <View style="@style/divider" />
 
         <TextView
-            android:id="@+id/tv_content"
+            android:id="@+id/pay_content"
             style="@style/style_black_normal_text"
             android:layout_width="wrap_content"
             android:layout_height="45dp"

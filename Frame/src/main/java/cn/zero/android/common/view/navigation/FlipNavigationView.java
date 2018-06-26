@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.GridView;
 
-import com.toocms.frame.image.ImageLoader;
+import com.bumptech.glide.RequestManager;
 import com.toocms.frame.ui.R;
 import com.zhy.autolayout.utils.AutoUtils;
 
@@ -27,22 +27,35 @@ public class FlipNavigationView<T> extends ConvenientBanner {
 
     public int page_size = 8; // 每页显示的数量
 
-    private ImageLoader imageLoader;
-
     private List<NavigationAdapter> adapters;
 
     private int pageCount; // 总共的页数
+    private boolean isCoerciveCircle; // 是否强制显示圆形图片
 
     public FlipNavigationView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
     }
 
-    public void setPage_size(int page_size) {
+    /**
+     * 设置每页最多显示的数量
+     *
+     * @param page_size 数量，不能为奇数
+     * @return
+     */
+    public FlipNavigationView<T> setPage_size(int page_size) {
         if (page_size % 2 != 0) {
             throw new RuntimeException("请输入一个偶数作为参数");
         }
         this.page_size = page_size;
+        return this;
+    }
+
+    /**
+     * 设置强制显示圆形图片
+     */
+    public FlipNavigationView<T> setCoerciveCircle() {
+        isCoerciveCircle = true;
+        return this;
     }
 
     /**
@@ -52,12 +65,12 @@ public class FlipNavigationView<T> extends ConvenientBanner {
      * @param keys 对应的key值，图标/文字
      * @return
      */
-    public FlipNavigationView setData(List<T> list, String[] keys, OnNavigationClickListener listener) {
+    public FlipNavigationView<T> setData(RequestManager glide, List<T> list, String[] keys, OnNavigationClickListener listener) {
         // 总页数=数据源条数/每页数量，取整
         pageCount = (int) Math.ceil(ListUtils.getSize(list) * 1.0 / page_size);
         adapters = new ArrayList<>();
         for (int i = 0; i < pageCount; i++) {
-            NavigationAdapter adapter = new NavigationAdapter(getContext(), list, keys, i, page_size);
+            NavigationAdapter adapter = new NavigationAdapter(getContext(), glide, list, keys, i, page_size, isCoerciveCircle);
             adapter.setOnNavigationClickListener(listener);
             adapters.add(adapter);
         }

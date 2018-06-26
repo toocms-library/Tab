@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import cn.zero.android.common.permission.PermissionGen;
 import cn.zero.android.common.util.ListUtils;
+import okhttp3.Call;
 
 /**
  * 主Fragment类，继承此类之后才能使用BaseAty中的与Fragment交互的方法<br/>
@@ -553,7 +554,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
         removeProgressDialog();
     }
 
-    public void onException(Throwable ex) {
+    public void onException(String request, Throwable ex) {
         if (isShowContent) {
             int index = content.indexOfChild(error);
             if (index < 0) content.addView(error);
@@ -568,7 +569,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
         // 处理错误日志
         try {
             if (CrashConfig.isAllowReportToHost()) {
-                CrashLogStore.saveLogToFile(application, ex, Thread.currentThread());
+                CrashLogStore.saveLogToFile(application, request, ex, Thread.currentThread());
                 CrashLogSender cls = new CrashLogSender(application);
                 cls.start();
             }

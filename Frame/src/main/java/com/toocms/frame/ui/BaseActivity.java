@@ -70,6 +70,7 @@ import cn.zero.android.common.permission.PermissionGen;
 import cn.zero.android.common.util.ListUtils;
 import cn.zero.android.common.view.autolayout.AutoToolbar;
 import cn.zero.android.common.view.ucrop.model.CropType;
+import okhttp3.Call;
 
 /**
  * 页面基类
@@ -1156,7 +1157,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
      *
      * @param ex
      */
-    public void onException(Throwable ex) {
+    public void onException(String request, Throwable ex) {
         if (isShowContent) {
             int index = content.indexOfChild(error);
             if (index < 0) content.addView(error);
@@ -1171,7 +1172,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
         // 处理错误日志
         try {
             if (CrashConfig.isAllowReportToHost()) {
-                CrashLogStore.saveLogToFile(application, ex, Thread.currentThread());
+                CrashLogStore.saveLogToFile(application, request, ex, Thread.currentThread());
                 CrashLogSender cls = new CrashLogSender(application);
                 cls.start();
             }

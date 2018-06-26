@@ -108,6 +108,7 @@ public class SelectImageAty extends BaseActivity {
      * 单选
      */
     public static final int MODE_SINGLE = 0;
+
     /**
      * 多选
      */

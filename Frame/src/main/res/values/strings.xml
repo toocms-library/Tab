@@ -4,7 +4,7 @@
 
     <string name="error_refresh">出错了，请点击刷新</string>
     <string name="network_anomaly">网络错误，请再试一次</string>
-    <string name="server_unknow_error">系统出现异常</string>
+    <string name="server_unknow_error">系统出现异常，请提交反馈以帮助我们快速解决问题</string>
 
     <!--更新-->
     <string name="update_newest">已是最新版本</string>

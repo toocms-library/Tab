@@ -30,6 +30,7 @@ import java.io.File;
 import cn.zero.android.common.permission.PermissionGen;
 import cn.zero.android.common.util.ApkUtils;
 import cn.zero.android.common.util.FileManager;
+import cn.zero.android.common.util.StringUtils;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -48,20 +49,21 @@ public class UpdateManager {
     /**
      * 检查更新
      *
-     * @param hasHint 如果是最新版本是否显示提示
+     * @param hasHint  如果是最新版本是否显示提示
+     * @param listener 以后再说按钮的点击监听
      */
-    public static final void checkUpdate(boolean hasHint) {
-        manager.check(hasHint);
+    public static final void checkUpdate(boolean hasHint, OnUpdateLaterClickListener... listener) {
+        manager.check(hasHint, (listener != null && listener.length != 0) ? listener[0] : null);
     }
 
-    private void check(final boolean hasHint) {
+    private void check(final boolean hasHint, final OnUpdateLaterClickListener listener) {
         HttpParams params = new HttpParams();
         params.put("package", x.app().getPackageName().replace(".", "_"));
         new ApiTool<TooCMSResponse<Version>>().postApi(x.dataSet().getUrls().getUpdateUrl(),
                 params, new ApiListener<TooCMSResponse<Version>>() {
                     @Override
                     public void onComplete(TooCMSResponse<Version> data, Call call, Response response) {
-                        Version version = data.getData();
+                        final Version version = data.getData();
                         UpdateManager.this.url = version.getUrl();
                         // 判断版本号
                         if (getVersionCode() >= Integer.parseInt(version.getVersion())) {
@@ -70,7 +72,10 @@ public class UpdateManager {
                         } else {
                             View view = View.inflate(AppManager.getInstance().getTopActivity(), R.layout.dialog_update, null);
                             ((TextView) view.findViewById(R.id.update_description)).setText(version.getDescription());
-                            new AlertDialog.Builder(AppManager.getInstance().getTopActivity()).setTitle(R.string.update_has_new).setView(view).setPositiveButton(R.string.update_now, new DialogInterface.OnClickListener() {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(AppManager.getInstance().getTopActivity());
+                            builder.setTitle(R.string.update_has_new);
+                            builder.setView(view);
+                            builder.setPositiveButton(R.string.update_now, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     receiver = new UpdateReceiver();
@@ -78,7 +83,18 @@ public class UpdateManager {
                                     AppManager.getInstance().getTopActivity().registerReceiver(receiver, intentFilter);
                                     PermissionGen.needPermission(AppManager.getInstance().getTopActivity(), REQUEST, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                                 }
-                            }).setNegativeButton(R.string.update_later, null).create().show();
+                            });
+                            builder.setNegativeButton(R.string.update_later, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (listener != null) listener.onUpdateLaterClick();
+                                    if (StringUtils.equals(version.getIs_force(), "1")) {
+                                        AppManager.getInstance().AppExit(x.app());
+                                    }
+                                }
+                            });
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
                         }
                     }
                 });
@@ -113,6 +129,7 @@ public class UpdateManager {
             @Override
             public void onSuccess(com.lzy.okgo.model.Response<File> response) {
                 progressDialog.dismiss();
+                isDownloading = false;
                 ApkUtils.install(x.app(), response.body());
             }
 

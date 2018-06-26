@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import cn.zero.android.common.util.StringUtils;
 import cn.zero.android.common.util.TimeUtils;
 
 /**
@@ -73,7 +74,7 @@ public class CrashLogStore {
         }
     }
 
-    public synchronized static void saveLogToFile(Application app, Throwable throwable, Thread thread) throws IOException {
+    public synchronized static void saveLogToFile(Application app, String request, Throwable throwable, Thread thread) throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss",
                 Locale.getDefault());
         String fileName = CrashConfig.LOG_FILE_PREFIX
@@ -134,7 +135,9 @@ public class CrashLogStore {
             sb.append("----------------------------- 崩溃原因 ---------------------------\n");
             //message
             sb.append("错误名称：" + throwable.getClass().getName() + "\n");
-            sb.append("详细信息：" + throwable.getLocalizedMessage() + "\n\n");
+            sb.append("详细信息：" + throwable.getLocalizedMessage() + "\n");
+            if (StringUtils.isEmpty(request)) sb.append("\n");
+            else sb.append("网络请求：" + request + "\n\n");
 
             sb.append("----------------------------- 错误日志 ---------------------------\n");
             // stack trace
