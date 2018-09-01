@@ -65,7 +65,8 @@ public abstract class ApiListener<T> extends AbsCallback<T> {
             onComplete(response.body(), response.getRawCall(), response.getRawResponse());
         } else {
             onError(((TooCMSResponse) response.body()).getMessage(), response.getRawCall(), response.getRawResponse());
-            onError(((TooCMSResponse) response.body()).getData().toString());
+            if (((TooCMSResponse) response.body()).getData() != null)
+                onError(((TooCMSResponse) response.body()).getData().toString());
         }
         Object tag = response.getRawCall().request().tag();
         if (tag instanceof BaseActivity) {

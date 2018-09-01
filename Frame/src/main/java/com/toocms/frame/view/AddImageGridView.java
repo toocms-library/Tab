@@ -20,7 +20,6 @@ import com.toocms.frame.tool.AppManager;
 import com.toocms.frame.tool.Toolkit;
 import com.toocms.frame.ui.BaseActivity;
 import com.toocms.frame.ui.R;
-import com.zhy.autolayout.utils.AutoUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -96,8 +95,8 @@ public class AddImageGridView extends GridView implements OnItemClickListener {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.AddImageGridView);
         if (typedArray.hasValue(R.styleable.AddImageGridView_horizontal_size) &&
                 typedArray.hasValue(R.styleable.AddImageGridView_vertical_size)) {
-            horizontalSize = AutoUtils.getPercentWidthSize((int) typedArray.getDimension(R.styleable.AddImageGridView_horizontal_size, itemSize));
-            verticalSize = AutoUtils.getPercentHeightSize((int) typedArray.getDimension(R.styleable.AddImageGridView_vertical_size, itemSize));
+            horizontalSize = (int) typedArray.getDimension(R.styleable.AddImageGridView_horizontal_size, itemSize);
+            verticalSize = (int) typedArray.getDimension(R.styleable.AddImageGridView_vertical_size, itemSize);
         }
     }
 
@@ -171,13 +170,13 @@ public class AddImageGridView extends GridView implements OnItemClickListener {
             }
             //
             if (ListUtils.getSize(list) == 0 || ListUtils.getSize(list) == position) {
-                ImageLoader.loadResId2Image(glide, R.drawable.image_show_piceker_add, viewHolder.imageView, 0);
+                ImageLoader.loadResId2Image(R.drawable.image_show_piceker_add, viewHolder.imageView, 0);
                 viewHolder.imgDelete.setVisibility(INVISIBLE);
             } else {
                 if (Toolkit.isUrl(list.get(position))) {
-                    ImageLoader.loadUrl2Image(glide, list.get(position), viewHolder.imageView, 0);
+                    ImageLoader.loadUrl2Image(list.get(position), viewHolder.imageView, 0);
                 } else {
-                    ImageLoader.loadFile2Image(glide, new File(list.get(position)), viewHolder.imageView, 0);
+                    ImageLoader.loadFile2Image(new File(list.get(position)), viewHolder.imageView, 0);
                 }
                 viewHolder.imgDelete.setVisibility(VISIBLE);
             }

@@ -90,7 +90,6 @@ public class SwipeToLoadRecyclerView extends RelativeLayout {
             case PULL_FROM_END:
                 swipeRefreshLayout.setEnabled(false);
                 isLoadEnable = true;
-                LogUtil.e("11111111111111111");
                 break;
             case BOTH:
                 swipeRefreshLayout.setEnabled(true);

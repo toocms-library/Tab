@@ -5,6 +5,10 @@ import android.os.AsyncTask;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.toocms.frame.image.GlideApp;
+import com.toocms.frame.image.GlideRequests;
+
+import org.xutils.x;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -20,16 +24,11 @@ import java.util.concurrent.ExecutionException;
 
 public final class ImageCacheAsyncTask extends AsyncTask<String, Void, File> {
 
-    private RequestManager glide;
+    private GlideRequests glideRequests;
     private CacheCallback callback;
 
-    public ImageCacheAsyncTask(Context context, CacheCallback callback) {
-        glide = Glide.with(context);
-        this.callback = callback;
-    }
-
-    public ImageCacheAsyncTask(RequestManager glide, CacheCallback callback) {
-        this.glide = glide;
+    public ImageCacheAsyncTask(CacheCallback callback) {
+        glideRequests = GlideApp.with(x.app());
         this.callback = callback;
     }
 
@@ -38,7 +37,7 @@ public final class ImageCacheAsyncTask extends AsyncTask<String, Void, File> {
         String url = params[0];
         try {
             return
-                    glide.download(url)
+                    glideRequests.download(url)
                             .submit()
                             .get();
         } catch (InterruptedException e) {

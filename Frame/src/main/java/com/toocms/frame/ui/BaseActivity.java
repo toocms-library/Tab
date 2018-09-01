@@ -17,6 +17,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -54,7 +56,6 @@ import com.toocms.frame.ui.imageselector.SelectImageAty;
 import com.toocms.frame.view.PromptInfo;
 import com.toocms.frame.view.progress.ProgressDialog;
 import com.umeng.analytics.MobclickAgent;
-import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.xutils.x;
 
@@ -68,9 +69,12 @@ import java.util.List;
 import butterknife.ButterKnife;
 import cn.zero.android.common.permission.PermissionGen;
 import cn.zero.android.common.util.ListUtils;
-import cn.zero.android.common.view.autolayout.AutoToolbar;
+import cn.zero.android.common.view.TooCMSToolbar;
 import cn.zero.android.common.view.ucrop.model.CropType;
 import okhttp3.Call;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * 页面基类
@@ -88,7 +92,7 @@ import okhttp3.Call;
  * @param <T> Presenter层的实例
  * @author Zero
  */
-public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLayoutActivity {
+public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCompatActivity {
 
     private final String KEY_FROM = "KEY_FROM";
 
@@ -97,7 +101,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
      * <p>
      * 当页面中不需要该控件时可在子类中调用mActionBar.hide()将其隐藏
      */
-    protected AutoToolbar mActionBar;
+    protected TooCMSToolbar mActionBar;
 
     /**
      * Toolbar中的标题
@@ -146,11 +150,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
      * {@link WeApplication}类的对象，子类中可通过该变量直接调用其中的方法
      */
     protected WeApplication application;
-
-    /**
-     * 页面中唯一的{@link RequestManager}对象，用于为{@link ImageLoader}类中的静态方法传输参数
-     */
-    protected RequestManager glide;
 
     /**
      * MVP中的Presenter层的对象
@@ -223,7 +222,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
         mActionBar = findViewById(R.id.toolbar);
         mActionBar.setTitle("");
         mTitle = mActionBar.findViewById(R.id.title);
-        AutoToolbar.LayoutParams params = (AutoToolbar.LayoutParams) mTitle.getLayoutParams();
+        Toolbar.LayoutParams params = (Toolbar.LayoutParams) mTitle.getLayoutParams();
         params.gravity = x.dataSet().getAppConfig().isShowTitleCenter() ? Gravity.CENTER : Gravity.LEFT | Gravity.CENTER_VERTICAL;
         setSupportActionBar(mActionBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -277,7 +276,8 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
         super.onResume();
         AppManager.instance = this;
         // 设置分割线显示
-        if (getTitlebarResId() != 0 || mActionBar.isShowing()) divider.setVisibility(View.VISIBLE);
+        if (getTitlebarResId() != 0 || mActionBar.isShowing())
+            divider.setVisibility(VISIBLE);
         // 统计页面
         MobclickAgent.onPageStart(this.getClass().getSimpleName());
         // 统计时长
@@ -367,7 +367,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
                 view.getLayoutParams().height = FrameLayout.LayoutParams.MATCH_PARENT;
             }
         } else {
-            titlebar.setVisibility(View.GONE);
+            titlebar.setVisibility(GONE);
         }
     }
 
@@ -382,7 +382,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AutoLa
      */
     private void preliminary() {
         application = (WeApplication) getApplication();
-        glide = Glide.with(this);
         // 初始化页面标识
         initFrom();
         // 初始化数据

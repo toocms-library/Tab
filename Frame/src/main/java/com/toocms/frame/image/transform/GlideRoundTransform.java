@@ -11,10 +11,13 @@ import android.support.annotation.NonNull;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.util.Util;
 
 import org.xutils.x;
 
 import java.security.MessageDigest;
+
+import cn.zero.android.common.util.ScreenUtils;
 
 /**
  * 圆角图片
@@ -23,36 +26,45 @@ import java.security.MessageDigest;
  */
 public class GlideRoundTransform extends BitmapTransformation {
 
-    private static float radius = 0f;
+    private final String ID = getClass().getName();
 
-    public GlideRoundTransform(int dp) {
-        super();
-        this.radius = Resources.getSystem().getDisplayMetrics().density * dp;
+    private int radius;
+
+    public GlideRoundTransform(int radius) {
+        this.radius = ScreenUtils.dpToPxInt(radius);
     }
 
     @Override
-    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-        return roundCrop(pool, toTransform);
+    protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+        int width = toTransform.getWidth();
+        int height = toTransform.getHeight();
+
+        Bitmap bitmap = pool.get(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.setHasAlpha(true);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setShader(new BitmapShader(toTransform, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
+        canvas.drawRoundRect(new RectF(0, 0, width, height), radius, radius, paint);
+        return bitmap;
     }
 
-    private Bitmap roundCrop(BitmapPool pool, Bitmap source) {
-        if (source == null) return null;
-
-        Bitmap result = pool.get(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
-        if (result == null) {
-            result = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GlideRoundTransform) {
+            GlideRoundTransform other = (GlideRoundTransform) obj;
+            return radius == other.radius;
         }
+        return false;
+    }
 
-        Canvas canvas = new Canvas(result);
-        Paint paint = new Paint();
-        paint.setShader(new BitmapShader(source, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
-        paint.setAntiAlias(true);
-        RectF rectF = new RectF(0f, 0f, source.getWidth(), source.getHeight());
-        canvas.drawRoundRect(rectF, radius, radius, paint);
-        return result;
+    @Override
+    public int hashCode() {
+        return Util.hashCode(ID.hashCode(), Util.hashCode(radius));
     }
 
     @Override
     public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+        messageDigest.update((ID + radius).getBytes(CHARSET));
     }
 }

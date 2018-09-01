@@ -14,7 +14,7 @@
         android:background="@drawable/action_button_bg"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        app:srcCompat="@drawable/btn_back" />
+        app:srcCompat="@drawable/ic_menu_back" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
         android:layout_toRightOf="@+id/btn_back"
         android:text="@string/selector_title"
         android:textColor="@color/white"
-        android:textSize="20sp" />
+        android:textSize="@dimen/action_title_size" />
 
     <Button
         android:id="@+id/commit"
@@ -33,13 +33,13 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
         android:background="@drawable/action_btn"
-        android:minHeight="1dp"
         android:minWidth="1dp"
-        android:paddingBottom="5dp"
+        android:minHeight="1dp"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
         android:text="@string/action_done"
         android:textColor="@color/default_text_color"
-        android:textSize="14sp" />
+        android:textSize="@dimen/action_menu_size" />
 </RelativeLayout>

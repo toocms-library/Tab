@@ -1,5 +1,7 @@
 package com.toocms.frame.image.progress;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
@@ -20,15 +22,18 @@ import okio.Source;
  */
 public class ProgressResponseBody extends ResponseBody {
 
-    private String imageUrl;
+    private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+
+    private String url;
+    private ProgressResponseBody.InternalProgressListener internalProgressListener;
+
     private ResponseBody responseBody;
-    private OnProgressListener progressListener;
     private BufferedSource bufferedSource;
 
-    public ProgressResponseBody(String url, ResponseBody responseBody, OnProgressListener progressListener) {
-        this.imageUrl = url;
+    ProgressResponseBody(String url, ProgressResponseBody.InternalProgressListener internalProgressListener, ResponseBody responseBody) {
+        this.url = url;
+        this.internalProgressListener = internalProgressListener;
         this.responseBody = responseBody;
-        this.progressListener = progressListener;
     }
 
     @Override
@@ -51,18 +56,29 @@ public class ProgressResponseBody extends ResponseBody {
 
     private Source source(Source source) {
         return new ForwardingSource(source) {
-            long totalBytesRead = 0;
+            long totalBytesRead;
+            long lastTotalBytesRead;
 
             @Override
             public long read(@NonNull Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
                 totalBytesRead += (bytesRead == -1) ? 0 : bytesRead;
 
-                if (progressListener != null) {
-                    progressListener.onProgress(imageUrl, totalBytesRead, contentLength(), (bytesRead == -1), null);
+                if (internalProgressListener != null && lastTotalBytesRead != totalBytesRead) {
+                    lastTotalBytesRead = totalBytesRead;
+                    mainThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            internalProgressListener.onProgress(url, totalBytesRead, contentLength());
+                        }
+                    });
                 }
                 return bytesRead;
             }
         };
+    }
+
+    interface InternalProgressListener {
+        void onProgress(String url, long bytesRead, long totalBytes);
     }
 }

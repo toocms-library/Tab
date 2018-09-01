@@ -85,7 +85,7 @@ public class FolderAdapter extends BaseAdapter {
                 holder.size.setText(String.format("%d%s", getTotalImageSize(), mContext.getResources().getString(R.string.photo_unit)));
                 if (mFolders.size() > 0) {
                     Folder f = mFolders.get(0);
-                    ImageLoader.loadUrl2Image(glide, f.cover.path, holder.cover, R.drawable.default_error);
+                    ImageLoader.loadUrl2Image(f.cover.path, holder.cover, R.drawable.default_error);
                 }
             } else {
                 holder.bindData(getItem(i));
@@ -149,7 +149,7 @@ public class FolderAdapter extends BaseAdapter {
             }
             // 显示图片
             if (data.cover != null) {
-                ImageLoader.loadUrl2Image(glide, data.cover.path, cover, R.drawable.default_error);
+                ImageLoader.loadUrl2Image(data.cover.path, cover, R.drawable.default_error);
             } else {
                 cover.setImageResource(R.drawable.default_error);
             }

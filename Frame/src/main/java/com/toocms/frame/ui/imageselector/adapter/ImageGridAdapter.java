@@ -228,7 +228,7 @@ public class ImageGridAdapter extends BaseAdapter {
             File imageFile = new File(data.path);
             if (imageFile.exists()) {
                 // 显示图片
-                ImageLoader.loadFile2Image(glide, imageFile, image, R.drawable.default_error);
+                ImageLoader.loadFile2Image(imageFile, image, R.drawable.default_error);
             } else {
                 image.setImageResource(R.drawable.default_error);
             }

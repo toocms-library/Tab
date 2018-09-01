@@ -2,13 +2,13 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 20180626
-        versionName "v4.4.3"
+        versionCode 20180901
+        versionName "v4.5.1"
 //        multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
     }
@@ -39,17 +39,25 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:27.1.1'
-    compile 'com.android.support:design:27.1.1'
-    compile 'com.github.bumptech.glide:glide:4.6.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
-    compile "com.github.bumptech.glide:okhttp3-integration:4.6.1"
-    compile 'com.lzy.net:okgo:3.0.1'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    // 图片加载
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.7.1'
+    // 网络请求
+    implementation 'com.lzy.net:okgo:3.0.1'
     //    implementation 'com.lzy.net:okserver:+'
-    compile 'com.zhy:autolayout:1.4.5'
-    compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.jakewharton:butterknife:8.8.1'
-    compile 'com.jakewharton:butterknife-compiler:8.8.1'
+    // 适配
+    implementation 'me.jessyan:autosize:latest.integration'
+    // json解析
+    implementation 'com.google.code.gson:gson:2.8.2'
+    // 注入
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    // 友盟
+    implementation 'com.umeng.sdk:common:latest.integration'
+    implementation 'com.umeng.sdk:analytics:latest.integration'
     //    implementation 'com.android.support:multidex:+'
 }

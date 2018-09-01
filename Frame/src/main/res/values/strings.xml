@@ -40,5 +40,7 @@
     <string name="ucrop_error_input_data_is_absent">必须指定输入以及输出Uri</string>
     <string name="ucrop_mutate_exception_hint">在你的App内覆写颜色资源(ucrop_color_toolbar_widget)，使低于5.0版本的系统正常运行</string>
 
+    <string name="str_pay_text">请输入支付密码</string>
+
     <string name="crash_message">系统出现异常，正在收集错误日志，请稍后...</string>
 </resources>
