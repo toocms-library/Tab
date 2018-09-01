@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<cn.zero.android.common.view.autolayout.AutoToolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<cn.zero.android.common.view.TooCMSToolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/action_bg"
     android:gravity="center_vertical"
-    android:minHeight="@dimen/action_height_size"
+    android:minWidth="@dimen/action_height_size"
     app:navigationIcon="@drawable/ic_menu_back">
 
     <TextView
@@ -14,4 +14,4 @@
         style="@style/TitleTextAppearance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-</cn.zero.android.common.view.autolayout.AutoToolbar>
+</cn.zero.android.common.view.TooCMSToolbar>

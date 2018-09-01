@@ -13,7 +13,6 @@ import com.bumptech.glide.RequestManager;
 import com.toocms.frame.image.ImageLoader;
 import com.toocms.frame.tool.Toolkit;
 import com.toocms.frame.ui.R;
-import com.zhy.autolayout.utils.AutoUtils;
 
 import org.xutils.x;
 
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.zero.android.common.util.ListUtils;
+import cn.zero.android.common.util.ScreenUtils;
 
 /**
  * 翻页导航栏的gridview适配器
@@ -83,7 +83,7 @@ class NavigationAdapter<T> extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.listitem_navigation, parent, false);
-            convertView.getLayoutParams().height = AutoUtils.getPercentHeightSize(190);
+            convertView.getLayoutParams().height = ScreenUtils.dpToPxInt(63.3f);
             viewHolder = new ViewHolder();
             viewHolder.imageView = convertView.findViewById(R.id.listitem_navigation_icon);
             viewHolder.textView = convertView.findViewById(R.id.listitem_navigation_text);
@@ -94,12 +94,12 @@ class NavigationAdapter<T> extends BaseAdapter {
         String uri = getValue(getItem(position), keys[0]);
         if (Toolkit.isUrl(uri)) {
             if (isCoerciveCircle)
-                ImageLoader.loadUrl2CircleImage(glide, uri, viewHolder.imageView, 0);
-            else ImageLoader.loadUrl2Image(glide, uri, viewHolder.imageView, 0);
+                ImageLoader.loadUrl2CircleImage(uri, viewHolder.imageView, 0);
+            else ImageLoader.loadUrl2Image(uri, viewHolder.imageView, 0);
         } else {
             if (isCoerciveCircle)
-                ImageLoader.loadResId2CircleImage(glide, Integer.parseInt(uri), viewHolder.imageView, 0);
-            else ImageLoader.loadResId2Image(glide, Integer.parseInt(uri), viewHolder.imageView, 0);
+                ImageLoader.loadResId2CircleImage(Integer.parseInt(uri), viewHolder.imageView, 0);
+            else ImageLoader.loadResId2Image(Integer.parseInt(uri), viewHolder.imageView, 0);
         }
         viewHolder.textView.setText(getValue(getItem(position), keys[1]));
         // 设置监听

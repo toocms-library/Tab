@@ -7,12 +7,12 @@ import android.widget.GridView;
 
 import com.bumptech.glide.RequestManager;
 import com.toocms.frame.ui.R;
-import com.zhy.autolayout.utils.AutoUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.zero.android.common.util.ListUtils;
+import cn.zero.android.common.util.ScreenUtils;
 import cn.zero.android.common.view.banner.ConvenientBanner;
 import cn.zero.android.common.view.banner.holder.CBViewHolderCreator;
 import cn.zero.android.common.view.banner.holder.Holder;
@@ -90,10 +90,10 @@ public class FlipNavigationView<T> extends ConvenientBanner {
         setCanLoop(false);
         // 根据数据源设置高度以及是否显示圆点
         // item的高度
-        int itemHeight = AutoUtils.getPercentHeightSize(190);
+        int itemHeight = ScreenUtils.dpToPxInt(63.3f);
         if (pageCount > 1) { // 当页数大于1页时，两行的高度+底部圆点的高度
             setPointViewVisible(true);
-            getLayoutParams().height = itemHeight * 2 + AutoUtils.getPercentHeightSize(40);
+            getLayoutParams().height = itemHeight * 2 + ScreenUtils.dpToPxInt(13.3f);
         } else {
             setPointViewVisible(false);
             if (ListUtils.getSize(list) > 4) {

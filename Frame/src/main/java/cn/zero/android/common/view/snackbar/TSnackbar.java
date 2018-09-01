@@ -33,7 +33,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.toocms.frame.ui.R;
-import com.zhy.autolayout.AutoFrameLayout;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -363,7 +362,7 @@ public final class TSnackbar {
     }
 
     public TSnackbar setOffset(int offset) {
-        AutoFrameLayout.LayoutParams params = (AutoFrameLayout.LayoutParams) mView.getLayoutParams();
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mView.getLayoutParams();
         params.setMargins(0, offset, 0, 0);
         return this;
     }

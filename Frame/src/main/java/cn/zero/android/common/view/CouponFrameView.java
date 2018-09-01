@@ -5,9 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-
-import com.zhy.autolayout.AutoLinearLayout;
-
+import android.widget.LinearLayout;
 
 /**
  * 优惠券效果控件
@@ -15,7 +13,7 @@ import com.zhy.autolayout.AutoLinearLayout;
  * @author Zero
  * @date 2016/7/27 10:56
  */
-public class CouponFrameView extends AutoLinearLayout {
+public class CouponFrameView extends LinearLayout {
 
     private int circleNum; // 圆数量
     private float gap = 8; // 圆间距

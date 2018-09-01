@@ -2,8 +2,7 @@ package cn.zero.android.common.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
-import com.zhy.autolayout.AutoLinearLayout;
+import android.widget.LinearLayout;
 
 /**
  * 监听键盘显示/隐藏的布局
@@ -11,7 +10,7 @@ import com.zhy.autolayout.AutoLinearLayout;
  * @author Zero
  * @date 2016/1/21 14:10
  */
-public class KeyboardLayout extends AutoLinearLayout {
+public class KeyboardLayout extends LinearLayout {
 
     private OnSoftKeyboardListener onSoftKeyboardListener;
 
