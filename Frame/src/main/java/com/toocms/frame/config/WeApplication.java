@@ -1,12 +1,8 @@
 package com.toocms.frame.config;
 
 import android.app.Application;
+import android.service.autofill.Dataset;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.location.LocationClientOption.LocationMode;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -15,19 +11,17 @@ import com.lzy.okgo.cookie.store.DBCookieStore;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.HttpParams;
+import com.toocms.frame.crash.CrashConfig;
 import com.toocms.frame.crash.CrashReport;
 import com.toocms.frame.crash.VerificationService;
-import com.toocms.frame.listener.LocationListener;
 import com.toocms.frame.tool.AppManager;
 import com.toocms.frame.tool.Toolkit;
 import com.toocms.frame.ui.BuildConfig;
 import com.umeng.commonsdk.UMConfigure;
-import com.zhy.autolayout.config.AutoLayoutConifg;
 
 import org.xutils.x;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -38,10 +32,6 @@ import cn.zero.android.common.util.GSONUtils;
 import cn.zero.android.common.util.PreferencesUtils;
 import cn.zero.android.common.util.StringUtils;
 import okhttp3.OkHttpClient;
-
-import android.service.autofill.Dataset;
-
-import com.zhy.autolayout.AutoLayoutActivity;
 
 /**
  * Application类初始化配置
@@ -75,16 +65,6 @@ public class WeApplication extends Application {
     private Map<String, String> locationInfo;
 
     /**
-     * 百度定位类的实例
-     */
-    private LocationClient mLocationClient;
-
-    /**
-     * 定位监听
-     */
-    private LocationListener locationListener;
-
-    /**
      * 该方法因为是整个程序的入口，所以主要就是初始化数据
      * 1、xUtils的初始化，说是xUtils其实只剩下Database模块了以及添加了{@link Dataset}的初始化
      * 2、初始化{@link AutoLayoutActivity}
@@ -102,8 +82,6 @@ public class WeApplication extends Application {
         // 初始化XUtils
         x.Ext.init(this);
         x.Ext.setDebug(BuildConfig.DEBUG);
-        // 用设备的可用高度进行百分比化
-        AutoLayoutConifg.getInstance().useDeviceSize().init(this);
         instance = this;
         AppManager.instance = this;
         // 初始化OkGo
@@ -116,6 +94,12 @@ public class WeApplication extends Application {
                 "Umeng",
                 UMConfigure.DEVICE_TYPE_PHONE,
                 x.dataSet().getAppConfig().getUmengPushSecret());
+        // 开启打印日志
+        try {
+            UMConfigure.setLogEnabled(!CrashConfig.isAllowReportToHost());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // 初始化第三方Jar包
         x.dataSet().getAppConfig().initJarForWeApplication(this);
         // 验证可用性
@@ -246,59 +230,5 @@ public class WeApplication extends Application {
     public void clearUserInfo() {
         user = null;
         PreferencesUtils.putString(this, PREF_USERINFO, "");
-    }
-
-    /**
-     * 开启百度定位<br/>
-     * 定位信息存在{@link WeApplication#getLocationInfo}
-     *
-     * @param listener 定位成功回调监听，不需要时传null
-     */
-    public void startBDLocation(LocationListener listener) {
-        locationListener = listener;
-        mLocationClient = new LocationClient(getApplicationContext());
-        mLocationClient.registerLocationListener(new LocListener());
-        LocationClientOption option = new LocationClientOption();
-        option.setLocationMode(LocationMode.Hight_Accuracy);// 设置定位模式
-        option.setCoorType("bd09ll");// 返回的定位结果是百度经纬度，默认值gcj02
-        option.setIsNeedAddress(true);
-        mLocationClient.setLocOption(option);
-        mLocationClient.start();
-    }
-
-    /**
-     * 获取定位信息
-     */
-    public Map<String, String> getLocationInfo() {
-        return locationInfo;
-    }
-
-    /**
-     * 定位回调监听
-     * <p>
-     * 将一些主要信息存在{@link #locationInfo}中，可通过{@link #getLocationInfo()}获取该Map，再通过{@link Constants}类中常量字段获取数据
-     */
-    private class LocListener implements BDLocationListener {
-
-        @Override
-        public void onReceiveLocation(BDLocation arg0) {
-            if (arg0 == null)
-                return;
-            locationInfo = new HashMap<>();
-            locationInfo.put(Constants.LATITUDE, String.valueOf(arg0.getLatitude()));
-            locationInfo.put(Constants.LONGITUDE, String.valueOf(arg0.getLongitude()));
-            if (arg0.hasAddr()) {
-                locationInfo.put(Constants.ADDRESS, arg0.getAddrStr());
-                locationInfo.put(Constants.CITY, arg0.getCity());
-                locationInfo.put(Constants.DISTRICT, arg0.getDistrict());
-                locationInfo.put(Constants.FLOOR, arg0.getFloor());
-                locationInfo.put(Constants.PROVINCE, arg0.getProvince());
-                locationInfo.put(Constants.STREET, arg0.getStreet());
-                locationInfo.put(Constants.STREET_NUMBER, arg0.getStreetNumber());
-            }
-            if (locationListener != null)
-                locationListener.onReceiveLocation(locationInfo);
-            mLocationClient.stop();
-        }
     }
 }
