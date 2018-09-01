@@ -26,7 +26,6 @@ public class CBPageAdapter<T> extends RecyclerView.Adapter<Holder> {
         helper = new CBPageAdapterHelper();
     }
 
-
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         int layoutId = creator.getLayoutId();

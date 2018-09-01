@@ -3,6 +3,7 @@ package cn.zero.android.common.view.banner;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,6 +33,7 @@ import cn.zero.android.common.view.banner.view.CBLoopViewPager;
  * @author Zero 支持自动翻页
  */
 public class ConvenientBanner<T> extends RelativeLayout {
+
     private List<T> mDatas;
     private int[] page_indicatorId;
     private ArrayList<ImageView> mPointViews = new ArrayList<ImageView>();
@@ -66,11 +68,9 @@ public class ConvenientBanner<T> extends RelativeLayout {
     }
 
     private void init(Context context) {
-        View hView = LayoutInflater.from(context).inflate(
-                R.layout.include_viewpager, this, true);
+        View hView = LayoutInflater.from(context).inflate(R.layout.include_viewpager, this, true);
         viewPager = hView.findViewById(R.id.cbLoopViewPager);
-        loPageTurningPoint = hView
-                .findViewById(R.id.loPageTurningPoint);
+        loPageTurningPoint = hView.findViewById(R.id.loPageTurningPoint);
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         viewPager.setLayoutManager(linearLayoutManager);
@@ -78,6 +78,11 @@ public class ConvenientBanner<T> extends RelativeLayout {
         cbLoopScaleHelper = new CBLoopScaleHelper();
 
         adSwitchTask = new AdSwitchTask(this);
+    }
+
+    public ConvenientBanner setLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        viewPager.setLayoutManager(layoutManager);
+        return this;
     }
 
     public ConvenientBanner setPages(CBViewHolderCreator holderCreator, List<T> datas) {
@@ -112,6 +117,7 @@ public class ConvenientBanner<T> extends RelativeLayout {
         viewPager.getAdapter().notifyDataSetChanged();
         if (page_indicatorId != null)
             setPageIndicator(page_indicatorId);
+        cbLoopScaleHelper.setCurrentItem(canLoop ? mDatas.size() : 0);
     }
 
     /**
@@ -201,8 +207,8 @@ public class ConvenientBanner<T> extends RelativeLayout {
      *
      * @return
      */
-    public ConvenientBanner setCurrentItem(int position) {
-        cbLoopScaleHelper.setCurrentItem(canLoop ? mDatas.size() + position : position);
+    public ConvenientBanner setCurrentItem(int position, boolean smoothScroll) {
+        cbLoopScaleHelper.setCurrentItem(canLoop ? mDatas.size() + position : position, smoothScroll);
         return this;
     }
 
@@ -264,7 +270,6 @@ public class ConvenientBanner<T> extends RelativeLayout {
         return this;
     }
 
-
     public void stopTurning() {
         turning = false;
         removeCallbacks(adSwitchTask);
@@ -306,4 +311,10 @@ public class ConvenientBanner<T> extends RelativeLayout {
             }
         }
     }
+
+//    @Override
+//    protected void onAttachedToWindow() {
+//        super.onAttachedToWindow();
+//        startTurning(autoTurningTime);
+//    }
 }

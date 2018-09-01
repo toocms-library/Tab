@@ -10,7 +10,6 @@ import cn.zero.android.common.util.ScreenUtils;
  * adapter中调用onCreateViewHolder, onBindViewHolder
  */
 public class CBPageAdapterHelper {
-
     public static int sPagePadding = 0;
     public static int sShowLeftCardWidth = 0;
 
