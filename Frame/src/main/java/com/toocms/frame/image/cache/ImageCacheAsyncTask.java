@@ -1,10 +1,7 @@
 package com.toocms.frame.image.cache;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.toocms.frame.image.GlideApp;
 import com.toocms.frame.image.GlideRequests;
 

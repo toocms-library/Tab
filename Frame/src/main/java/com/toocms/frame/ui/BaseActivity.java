@@ -39,7 +39,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.lzy.okgo.OkGo;
 import com.toocms.frame.config.Constants;
 import com.toocms.frame.config.IAppConfig;

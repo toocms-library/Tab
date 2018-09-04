@@ -8,8 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.toocms.frame.image.ImageLoader;
 import com.toocms.frame.ui.R;
 import com.toocms.frame.ui.imageselector.bean.Folder;
@@ -27,7 +25,6 @@ public class FolderAdapter extends BaseAdapter {
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private RequestManager glide;
 
     private List<Folder> mFolders = new ArrayList<>();
 
@@ -35,7 +32,6 @@ public class FolderAdapter extends BaseAdapter {
 
     public FolderAdapter(Context context) {
         mContext = context;
-        glide = Glide.with(context);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 

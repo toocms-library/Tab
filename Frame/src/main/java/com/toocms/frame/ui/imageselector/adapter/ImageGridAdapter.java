@@ -10,8 +10,6 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.toocms.frame.image.ImageLoader;
 import com.toocms.frame.ui.R;
 import com.toocms.frame.ui.imageselector.bean.Image;
@@ -31,7 +29,6 @@ public class ImageGridAdapter extends BaseAdapter {
     private static final int TYPE_CAMERA = 0;
     private static final int TYPE_NORMAL = 1;
 
-    private RequestManager glide;
     private LayoutInflater inflater;
     private boolean showCamera = true;
     private boolean showSelectIndicator = true;
@@ -42,7 +39,6 @@ public class ImageGridAdapter extends BaseAdapter {
     final int itemWidth;
 
     public ImageGridAdapter(Context context, boolean showCamera, int column) {
-        glide = Glide.with(context);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.showCamera = showCamera;
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

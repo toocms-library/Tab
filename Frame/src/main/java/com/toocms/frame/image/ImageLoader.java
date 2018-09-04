@@ -1,38 +1,14 @@
 package com.toocms.frame.image;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
-import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.DrawableImageViewTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 import com.toocms.frame.image.cache.CacheCallback;
 import com.toocms.frame.image.cache.ImageCacheAsyncTask;
-import com.toocms.frame.image.progress.OnProgressListener;
-import com.toocms.frame.image.progress.ProgressManager;
 import com.toocms.frame.image.transform.GlideCircleTransform;
 import com.toocms.frame.image.transform.GlideRoundTransform;
 
-import org.xutils.x;
-
 import java.io.File;
-import java.lang.ref.WeakReference;
-
-import cn.zero.android.common.util.StringUtils;
 
 /**
  * 异步加载图片类

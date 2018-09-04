@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.toocms.frame.config.Settings;
 import com.toocms.frame.image.ImageLoader;
 import com.toocms.frame.tool.AppManager;
@@ -48,7 +47,6 @@ public class AddImageGridView extends GridView implements OnItemClickListener {
 
     private final int NUM_COLIMNS = 4;
 
-    private RequestManager glide;
     public AddImageAdapter adapter;
 
     private ArrayList<String> list;
@@ -67,7 +65,7 @@ public class AddImageGridView extends GridView implements OnItemClickListener {
     public AddImageGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
         parseStyle(context, attrs);
-        init(context);
+        init();
     }
 
     @Override
@@ -81,8 +79,7 @@ public class AddImageGridView extends GridView implements OnItemClickListener {
         return adapter;
     }
 
-    private void init(Context context) {
-        glide = Glide.with(context);
+    private void init() {
         setNumColumns(numColumns);
         setVerticalSpacing(verticalSpacing);
         setHorizontalSpacing(horizontalSpacing);

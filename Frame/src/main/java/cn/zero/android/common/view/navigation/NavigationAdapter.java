@@ -8,13 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.toocms.frame.image.ImageLoader;
 import com.toocms.frame.tool.Toolkit;
 import com.toocms.frame.ui.R;
-
-import org.xutils.x;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -34,7 +30,6 @@ class NavigationAdapter<T> extends BaseAdapter {
     private OnNavigationClickListener listener;
     private LayoutInflater layoutInflater;
     private ViewHolder viewHolder;
-    private RequestManager glide;
 
     private List<T> list;
     private String[] keys; // 图标和文字的key值
@@ -43,12 +38,11 @@ class NavigationAdapter<T> extends BaseAdapter {
     private int page_size;
     private boolean isCoerciveCircle; // 是否强制显示圆形图片
 
-    public NavigationAdapter(Context context, RequestManager glide, List<T> list, String[] keys, int index, int page_size, boolean isCoerciveCircle) {
+    public NavigationAdapter(Context context, List<T> list, String[] keys, int index, int page_size, boolean isCoerciveCircle) {
         this.list = list;
         this.keys = keys;
         this.index = index;
         this.page_size = page_size;
-        this.glide = glide;
         this.isCoerciveCircle = isCoerciveCircle;
         layoutInflater = LayoutInflater.from(context);
     }

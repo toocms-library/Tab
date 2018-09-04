@@ -20,7 +20,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.lzy.okgo.OkGo;
 import com.toocms.frame.config.Constants;
 import com.toocms.frame.config.WeApplication;
@@ -64,7 +63,6 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
     private AlertDialog.Builder builder;
 
     protected WeApplication application;
-    protected RequestManager glide;
     public T presenter;
 
     /**
@@ -271,7 +269,6 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
      */
     private void preliminary() {
         application = (WeApplication) getActivity().getApplication();
-        glide = Glide.with(this);
         // 初始化数据
         initialized();
         // 初始化Presenter

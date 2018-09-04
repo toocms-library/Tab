@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.GridView;
 
-import com.bumptech.glide.RequestManager;
 import com.toocms.frame.ui.R;
 
 import java.util.ArrayList;
@@ -65,12 +64,12 @@ public class FlipNavigationView<T> extends ConvenientBanner {
      * @param keys 对应的key值，图标/文字
      * @return
      */
-    public FlipNavigationView<T> setData(RequestManager glide, List<T> list, String[] keys, OnNavigationClickListener listener) {
+    public FlipNavigationView<T> setData(List<T> list, String[] keys, OnNavigationClickListener listener) {
         // 总页数=数据源条数/每页数量，取整
         pageCount = (int) Math.ceil(ListUtils.getSize(list) * 1.0 / page_size);
         adapters = new ArrayList<>();
         for (int i = 0; i < pageCount; i++) {
-            NavigationAdapter adapter = new NavigationAdapter(getContext(), glide, list, keys, i, page_size, isCoerciveCircle);
+            NavigationAdapter adapter = new NavigationAdapter(getContext(), list, keys, i, page_size, isCoerciveCircle);
             adapter.setOnNavigationClickListener(listener);
             adapters.add(adapter);
         }
