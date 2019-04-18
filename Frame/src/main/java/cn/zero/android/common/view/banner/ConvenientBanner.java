@@ -39,7 +39,7 @@ public class ConvenientBanner<T> extends RelativeLayout {
     private ArrayList<ImageView> mPointViews = new ArrayList<ImageView>();
     private CBPageAdapter pageAdapter;
     private CBLoopViewPager viewPager;
-    private ViewGroup loPageTurningPoint;
+    protected ViewGroup loPageTurningPoint;
     private long autoTurningTime = -1;
     private boolean turning;
     private boolean canTurn = false;

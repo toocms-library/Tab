@@ -129,6 +129,14 @@ public class SwipeToLoadRecyclerView extends RelativeLayout {
             scrollView.setVisibility(emptyViewVisible ? VISIBLE : GONE);
             recyclerView.setVisibility(emptyViewVisible ? GONE : VISIBLE);
         }
+        if (!ListUtils.isEmpty(headerViews))
+            for (View v : headerViews) {
+                RecyclerViewUtils.setHeaderView(recyclerView, v);
+            }
+        if (!ListUtils.isEmpty(footerViews))
+            for (View v : footerViews) {
+                RecyclerViewUtils.setFooterView(recyclerView, v);
+            }
     }
 
     public void setAdapter(final RecyclerView.Adapter adapter) {
@@ -198,6 +206,10 @@ public class SwipeToLoadRecyclerView extends RelativeLayout {
                     else swipeRefreshLayout.setEnabled(true);
                 }
             });
+    }
+
+    public HeaderAndFooterRecyclerViewAdapter getRealAdapter() {
+        return headerAndFooterRecyclerViewAdapter;
     }
 
     public RecyclerView getRecyclerView() {

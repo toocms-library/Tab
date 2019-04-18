@@ -18,7 +18,7 @@ public final class CrashConfig {
     /**
      * 错误日志上传地址
      */
-    public static final String REPORT_URL = "http://api.toocms.com/AppLog/add";
+    public static final String REPORT_URL = "http://api.toocms.com/AppLog/addNew";
 
     public static final int MAGIC_NUM = 0x0003125B;
 

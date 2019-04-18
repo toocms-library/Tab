@@ -27,8 +27,8 @@
     </style>
 
     <style name="ToolbarNavigationButtonStyle" parent="@style/Widget.AppCompat.Toolbar.Button.Navigation">
-        <item name="android:minHeight">@dimen/action_height_size</item>
-        <item name="android:background">@drawable/action_button_bg</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="background">@color/transparent</item>
     </style>
 
     <style name="AppTheme.Dialog" parent="android:Theme.Dialog">

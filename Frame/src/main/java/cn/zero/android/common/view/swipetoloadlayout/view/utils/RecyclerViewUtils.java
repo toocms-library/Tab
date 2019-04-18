@@ -24,8 +24,8 @@ public class RecyclerViewUtils {
         if (outerAdapter == null || !(outerAdapter instanceof HeaderAndFooterRecyclerViewAdapter))
             return;
         HeaderAndFooterRecyclerViewAdapter headerAndFooterAdapter = (HeaderAndFooterRecyclerViewAdapter) outerAdapter;
-//        if (headerAndFooterAdapter.getHeaderViewsCount() == 0)
-        headerAndFooterAdapter.addHeaderView(view);
+        if (headerAndFooterAdapter.getHeaderViewsCount() == 0)
+            headerAndFooterAdapter.addHeaderView(view);
     }
 
     /**
@@ -39,8 +39,8 @@ public class RecyclerViewUtils {
         if (outerAdapter == null || !(outerAdapter instanceof HeaderAndFooterRecyclerViewAdapter))
             return;
         HeaderAndFooterRecyclerViewAdapter headerAndFooterAdapter = (HeaderAndFooterRecyclerViewAdapter) outerAdapter;
-//        if (headerAndFooterAdapter.getFooterViewsCount() == 0)
-        headerAndFooterAdapter.addFooterView(view);
+        if (headerAndFooterAdapter.getFooterViewsCount() == 0)
+            headerAndFooterAdapter.addFooterView(view);
     }
 
     /**

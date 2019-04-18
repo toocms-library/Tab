@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -81,10 +82,7 @@ public class CrashLogSender {
         }
     }
 
-    public void sendHttpRequest(String crashInfo) throws IOException {
-        HttpParams params = new HttpParams();
-        params.put("project", x.app().getString(R.string.app_name));
-        params.put("content", crashInfo);
+    public void sendHttpRequest(HttpParams params) {
         new ApiTool<TooCMSResponse<Void>>().postApi(CrashConfig.REPORT_URL, params, new ApiListener<TooCMSResponse<Void>>() {
             @Override
             public void onComplete(TooCMSResponse<Void> data, Call call, Response response) {
@@ -93,7 +91,6 @@ public class CrashLogSender {
         });
     }
 
-
     private boolean isAllowConnectNetwork() {
         ConnectivityManager connectMgr = (ConnectivityManager) mApp.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connectMgr.getActiveNetworkInfo();
@@ -101,8 +98,7 @@ public class CrashLogSender {
             return false;
         }
 
-        if (netInfo.getType() == ConnectivityManager.TYPE_WIFI
-                && netInfo.isConnected()) {
+        if (netInfo.getType() == ConnectivityManager.TYPE_WIFI && netInfo.isConnected()) {
             return true;
         }
 
@@ -122,18 +118,21 @@ public class CrashLogSender {
         if (logs == null || logs.length == 0) {
             return;
         }
-        StringBuffer sb = new StringBuffer();
 
-        //Write header
-        CrashLogStore.writeDataHeader(mApp, sb);
-
-        //Write logs data
         for (int i = 0; i < logs.length; i++) {
-            File logFile = logs[i];
-            CrashLogStore.writeLogData(sb, logFile);
-        }
 
-        this.sendHttpRequest(sb.toString());
+            StringBuffer sb = new StringBuffer();
+            HttpParams params = new HttpParams();
+
+            //Write header
+            CrashLogStore.writeDataHeader(mApp, params);
+
+            //Write logs data
+            File logFile = logs[i];
+            CrashLogStore.writeLogData(sb, logFile, params);
+
+            this.sendHttpRequest(params);
+        }
 
         //Delete log files after successfully reported.
         CrashLogStore.deleteLogFiles(logs);

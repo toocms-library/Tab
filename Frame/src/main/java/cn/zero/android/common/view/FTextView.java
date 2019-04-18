@@ -123,7 +123,7 @@ public class FTextView extends TextView implements View.OnTouchListener {
 				isShadowEnabled = typedArray.getBoolean(attr, true); // Default
 																		// is
 																		// true
-			} else if (attr == R.styleable.FButton_buttonColor) {
+			} else if (attr == R.styleable.FButton_fbuttonColor) {
 				mButtonColor = typedArray.getColor(attr, R.color.fbutton_default_color);
 			} else if (attr == R.styleable.FButton_shadowColor) {
 				mShadowColor = typedArray.getColor(attr, R.color.fbutton_default_shadow_color);

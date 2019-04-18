@@ -17,6 +17,8 @@ import org.xutils.x;
 import java.io.IOException;
 
 /**
+ * 异常捕捉器
+ * <p>
  * Author：Zero
  * Date：2017/8/31 16:51
  *

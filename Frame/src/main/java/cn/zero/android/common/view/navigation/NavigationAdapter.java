@@ -77,7 +77,8 @@ class NavigationAdapter<T> extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.listitem_navigation, parent, false);
-            convertView.getLayoutParams().height = ScreenUtils.dpToPxInt(63.3f);
+            // 固定高度
+            convertView.getLayoutParams().height = FlipNavigationView.ITEM_HEIGHT;
             viewHolder = new ViewHolder();
             viewHolder.imageView = convertView.findViewById(R.id.listitem_navigation_icon);
             viewHolder.textView = convertView.findViewById(R.id.listitem_navigation_text);

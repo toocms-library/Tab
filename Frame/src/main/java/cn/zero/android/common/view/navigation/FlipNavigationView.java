@@ -4,8 +4,12 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.toocms.frame.ui.R;
+
+import org.xutils.common.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,8 @@ import cn.zero.android.common.view.banner.holder.Holder;
  * @date 2016/9/9 14:57
  */
 public class FlipNavigationView<T> extends ConvenientBanner {
+
+    public static final int ITEM_HEIGHT = ScreenUtils.dpToPxInt(80);
 
     public int page_size = 8; // 每页显示的数量
 
@@ -86,22 +92,33 @@ public class FlipNavigationView<T> extends ConvenientBanner {
         }, adapters)
                 .setPageIndicator(new int[]{R.drawable.dot_normal, R.drawable.dot_focused})
                 .setPageIndicatorAlign(PageIndicatorAlign.CENTER_HORIZONTAL);
-        setCanLoop(false);
-        // 根据数据源设置高度以及是否显示圆点
-        // item的高度
-        int itemHeight = ScreenUtils.dpToPxInt(63.3f);
-        if (pageCount > 1) { // 当页数大于1页时，两行的高度+底部圆点的高度
+        // 将指示器下边距调成0以做到指示器在内容下方
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) loPageTurningPoint.getLayoutParams();
+        params.bottomMargin = 0;
+        // 当页数大于1页时，显示指示器，否则隐藏
+        if (pageCount > 1) {
             setPointViewVisible(true);
-            getLayoutParams().height = itemHeight * 2 + ScreenUtils.dpToPxInt(13.3f);
+            getLayoutParams().height = ITEM_HEIGHT * 2 + getPageIndicatorHeight();
         } else {
             setPointViewVisible(false);
-            if (ListUtils.getSize(list) > 4) {
-                getLayoutParams().height = itemHeight * 2;
+            if (ListUtils.getSize(list) > (page_size / 2)) {
+                getLayoutParams().height = ITEM_HEIGHT * 2;
             } else {
-                getLayoutParams().height = itemHeight;
+                getLayoutParams().height = ITEM_HEIGHT;
             }
         }
+        setCanLoop(false);
         return this;
+    }
+
+    /**
+     * 获取翻页指示器的高
+     *
+     * @return
+     */
+    public int getPageIndicatorHeight() {
+        loPageTurningPoint.measure(0, 0);
+        return loPageTurningPoint.getMeasuredHeight();
     }
 
     private class FlipHolder extends Holder<NavigationAdapter> {
