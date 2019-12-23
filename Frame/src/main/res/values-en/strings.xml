@@ -6,10 +6,12 @@
     <string name="server_unknow_error">System Abnormal, Please Submit Feedback To Help Us Solve The Problem Quickly</string>
 
     <!--更新-->
+    <string name="update_catch">Version Parsing Exception</string>
     <string name="update_newest">It\'s The Latest Version</string>
     <string name="update_has_new">New Version</string>
     <string name="update_later">Later</string>
-    <string name="update_now">Update</string>
+    <string name="update_now_update">Update</string>
+    <string name="update_now_install">Install</string>
     <string name="update_content">Update Content：</string>
     <string name="update_downloading">Downloading...</string>
     <string name="update_fail">Failed To Get Permission, Unable To Update</string>

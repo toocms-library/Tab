@@ -9,7 +9,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.v7.app.AlertDialog;
+
+import androidx.appcompat.app.AlertDialog;
+
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,6 +20,7 @@ import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Progress;
 import com.toocms.frame.tool.AppManager;
+import com.toocms.frame.ui.BaseActivity;
 import com.toocms.frame.ui.R;
 import com.toocms.frame.view.PromptInfo;
 import com.toocms.frame.web.ApiListener;
@@ -30,6 +34,7 @@ import java.io.File;
 import cn.zero.android.common.permission.PermissionGen;
 import cn.zero.android.common.util.ApkUtils;
 import cn.zero.android.common.util.FileManager;
+import cn.zero.android.common.util.FileUtils;
 import cn.zero.android.common.util.StringUtils;
 import okhttp3.Call;
 import okhttp3.Response;
@@ -43,7 +48,7 @@ public class UpdateManager {
     private UpdateReceiver receiver;
 
     private String url;
-    private String path = FileManager.getDownloadPath() + x.app().getResources().getString(R.string.app_name) + ".apk";
+    private int version;
     private boolean isDownloading;
 
     /**
@@ -65,32 +70,39 @@ public class UpdateManager {
                     public void onComplete(TooCMSResponse<Version> data, Call call, Response response) {
                         final Version version = data.getData();
                         UpdateManager.this.url = version.getUrl();
+                        try {
+                            UpdateManager.this.version = Integer.parseInt(version.getVersion());
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            showToast(R.string.update_catch);
+                            return;
+                        }
                         // 判断版本号
-                        if (getVersionCode() >= Integer.parseInt(version.getVersion())) {
+                        if (getVersionCode() >= UpdateManager.this.version) {
                             if (hasHint)
-                                PromptInfo.getInstance().showToast(AppManager.getInstance().getTopActivity(), R.string.update_newest);
+                                showToast(R.string.update_newest);
+                            FileUtils.deleteFile(FileManager.getDownloadPath());    // 删除所有安装包
                         } else {
                             View view = View.inflate(AppManager.getInstance().getTopActivity(), R.layout.dialog_update, null);
                             ((TextView) view.findViewById(R.id.update_description)).setText(version.getDescription());
                             AlertDialog.Builder builder = new AlertDialog.Builder(AppManager.getInstance().getTopActivity());
                             builder.setTitle(R.string.update_has_new);
                             builder.setView(view);
-                            builder.setPositiveButton(R.string.update_now, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                            File file = getInstallApk();    //  获取安装包
+                            builder.setPositiveButton(null == file ? R.string.update_now_update : R.string.update_now_install, (dialog, which) -> {
+                                if (null == file) {
                                     receiver = new UpdateReceiver();
                                     IntentFilter intentFilter = new IntentFilter(PermissionGen.ACTION_PERMISSIONS);
                                     AppManager.getInstance().getTopActivity().registerReceiver(receiver, intentFilter);
                                     PermissionGen.needPermission(AppManager.getInstance().getTopActivity(), REQUEST, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                                } else {
+                                    ApkUtils.install(x.app(), file);
                                 }
                             });
-                            builder.setNegativeButton(R.string.update_later, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (listener != null) listener.onUpdateLaterClick();
-                                    if (StringUtils.equals(version.getIs_force(), "1")) {
-                                        AppManager.getInstance().AppExit(x.app());
-                                    }
+                            builder.setNegativeButton(R.string.update_later, (dialog, which) -> {
+                                if (listener != null) listener.onUpdateLaterClick();
+                                if (StringUtils.equals(version.getIs_force(), "1")) {
+                                    AppManager.getInstance().AppExit(x.app());
                                 }
                             });
                             AlertDialog alertDialog = builder.create();
@@ -111,12 +123,7 @@ public class UpdateManager {
         progressDialog.setMax(100);
         progressDialog.setMessage(x.app().getResources().getString(R.string.update_downloading));
 
-        progressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                AppManager.getInstance().getTopActivity().unregisterReceiver(receiver);
-            }
-        });
+        progressDialog.setOnDismissListener(dialog -> AppManager.getInstance().getTopActivity().unregisterReceiver(receiver));
         if (!progressDialog.isShowing())
             progressDialog.show();
         downloadFile(url);
@@ -124,7 +131,7 @@ public class UpdateManager {
 
     // 下载文件
     private synchronized void downloadFile(String url) {
-        ApiTool.downloadApi(url, null, new FileCallback(FileManager.getDownloadPath(), x.app().getResources().getString(R.string.app_name) + ".apk") {
+        ApiTool.downloadApi(url, null, new FileCallback(FileManager.getDownloadPath(), getApkName()) {
 
             @Override
             public void onSuccess(com.lzy.okgo.model.Response<File> response) {
@@ -151,6 +158,25 @@ public class UpdateManager {
         }
     }
 
+    private String getApkName() {
+        return x.app().getResources().getString(R.string.app_name) + version + ".apk";
+    }
+
+    private File getInstallApk() {
+        File file = new File(FileManager.getDownloadPath());
+        if (!file.exists()) return null;
+        File[] files = file.listFiles();
+        if (file.listFiles().length <= 0) return null;
+        for (int i = 0; i < files.length; i++) {
+            if (TextUtils.equals(files[i].getName(), getApkName())) return files[i];
+        }
+        return null;
+    }
+
+    private void showToast(int resid) {
+        ((BaseActivity) AppManager.getInstance().getTopActivity()).showToast(resid);
+    }
+
     private class UpdateReceiver extends BroadcastReceiver {
 
         @Override
@@ -159,7 +185,7 @@ public class UpdateManager {
                 if (intent.getBooleanExtra(PermissionGen.PERMISSIONS_RESULT, false))
                     startDownload(url);
             } else {
-                PromptInfo.getInstance().showToast(AppManager.getInstance().getTopActivity(), R.string.update_fail);
+                showToast(R.string.update_fail);
             }
         }
     }
