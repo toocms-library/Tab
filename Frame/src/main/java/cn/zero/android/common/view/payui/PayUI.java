@@ -1,9 +1,10 @@
 package cn.zero.android.common.view.payui;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.toocms.frame.tool.AppManager;
 import com.toocms.frame.ui.BaseActivity;
@@ -27,14 +28,6 @@ public class PayUI {
         PayFragment fragment = new PayFragment();
         fragment.setArguments(bundle);
         fragment.setPaySuccessCallBack(callBack);
-        FragmentManager manager;
-        if (AppManager.instance instanceof FragmentActivity) {
-            manager = ((BaseActivity) AppManager.instance).getSupportFragmentManager();
-        } else if (AppManager.instance instanceof Fragment) {
-            manager = ((BaseFragment) AppManager.instance).getFragmentManager();
-        } else {
-            throw new RuntimeException("请在FragmentActivity/Fragment中调用");
-        }
-        fragment.show(manager, "Pay");
+        fragment.show(AppManager.getInstance().getTopActivity().getSupportFragmentManager(), "Pay");
     }
 }

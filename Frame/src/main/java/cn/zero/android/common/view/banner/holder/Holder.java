@@ -1,6 +1,6 @@
 package cn.zero.android.common.view.banner.holder;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 /**

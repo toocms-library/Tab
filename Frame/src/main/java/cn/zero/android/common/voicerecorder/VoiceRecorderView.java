@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.toocms.frame.tool.AppManager;
+import com.toocms.frame.ui.BaseActivity;
 import com.toocms.frame.ui.R;
-import com.toocms.frame.view.PromptInfo;
 
 import cn.zero.android.common.util.FileManager;
 
@@ -24,10 +24,8 @@ import cn.zero.android.common.util.FileManager;
 public class VoiceRecorderView extends RelativeLayout {
 
     protected Context context;
-    protected LayoutInflater inflater;
     protected Drawable[] micImages;
     protected VoiceRecorder voiceRecorder;
-    private PromptInfo promptInfo = PromptInfo.getInstance();
 
     protected PowerManager.WakeLock wakeLock;
     protected ImageView micImage;
@@ -120,13 +118,13 @@ public class VoiceRecorderView extends RelativeLayout {
                                 recorderCallback.onVoiceRecordComplete(getVoiceFilePath(), length);
                             }
                         } else if (length == VoiceRecorder.FILE_INVALID) {
-                            promptInfo.showToast(AppManager.getInstance().getTopActivity(), R.string.Recording_without_permission);
+                            ((BaseActivity) AppManager.getInstance().getTopActivity()).showToast(R.string.Recording_without_permission);
                         } else {
-                            promptInfo.showToast(AppManager.getInstance().getTopActivity(), R.string.The_recording_time_is_too_short);
+                            ((BaseActivity) AppManager.getInstance().getTopActivity()).showToast(R.string.The_recording_time_is_too_short);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        promptInfo.showToast(AppManager.getInstance().getTopActivity(), R.string.send_failure_please);
+                        ((BaseActivity) AppManager.getInstance().getTopActivity()).showToast(R.string.send_failure_please);
                     }
                 }
                 return true;
@@ -148,7 +146,7 @@ public class VoiceRecorderView extends RelativeLayout {
 
     public void startRecording() {
         if (!FileManager.hasSDCard()) {
-            promptInfo.showToast(AppManager.getInstance().getTopActivity(), R.string.Send_voice_need_sdcard_support);
+            ((BaseActivity) AppManager.getInstance().getTopActivity()).showToast(R.string.Send_voice_need_sdcard_support);
             return;
         }
         try {
@@ -163,7 +161,7 @@ public class VoiceRecorderView extends RelativeLayout {
             if (voiceRecorder != null)
                 voiceRecorder.discardRecording();
             this.setVisibility(View.INVISIBLE);
-            promptInfo.showToast(AppManager.getInstance().getTopActivity(), R.string.recoding_fail);
+            ((BaseActivity) AppManager.getInstance().getTopActivity()).showToast(R.string.recoding_fail);
             return;
         }
     }

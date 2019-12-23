@@ -17,39 +17,21 @@ import java.io.File;
 public class FileManager {
 
     /**
-     * 获取缓存图片文件路径
-     *
-     * @return String
-     */
-    public static String getSaveFilePath() {
-        return getRootFilePath() + x.dataSet().getAppConfig().getProgectFolder() + File.separator + "picture_cache" + File.separator;
-    }
-
-    /**
-     * 获取压缩文件临时存储路径
-     *
-     * @return String
-     */
-    public static String getCompressFilePath() {
-        return getRootFilePath() + x.dataSet().getAppConfig().getProgectFolder() + File.separator + "compress_cache" + File.separator;
-    }
-
-    /**
      * 获取崩溃日志存储路径
      *
      * @return String
      */
     public static String getCrashLogFilePath() {
-        return getRootFilePath() + x.dataSet().getAppConfig().getProgectFolder() + File.separator + "crash_log" + File.separator;
+        return getDirectoryPath(getRootFilePath("crash_log"));
     }
 
     /**
-     * 获取录音文件临时存储路径
+     * 获取音频文件临时存储路径
      *
      * @return String
      */
     public static String getVoiceFilePath() {
-        return getRootFilePath() + x.dataSet().getAppConfig().getProgectFolder() + File.separator + "voice" + File.separator;
+        return getDirectoryPath(getRootFilePath("voice"));
     }
 
     /**
@@ -58,7 +40,7 @@ public class FileManager {
      * @return
      */
     public static String getDownloadPath() {
-        return getRootFilePath() + x.dataSet().getAppConfig().getProgectFolder() + File.separator + "download" + File.separator;
+        return getDirectoryPath(getRootFilePath("download"));
     }
 
     /**
@@ -67,7 +49,7 @@ public class FileManager {
      * @return
      */
     public static String getCachePath() {
-        return getRootFilePath() + x.dataSet().getAppConfig().getProgectFolder() + File.separator + "cache" + File.separator;
+        return getDirectoryPath(getRootCachePath());
     }
 
     public static boolean hasSDCard() {
@@ -75,13 +57,33 @@ public class FileManager {
         return status.equals(Environment.MEDIA_MOUNTED);
     }
 
-    public static String getRootFilePath() {
-        if (hasSDCard()) {
-            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/";// filePath:/sdcard/
+    /**
+     * 获取目录的路径
+     *
+     * @param file
+     * @return
+     */
+    public static String getDirectoryPath(File file) {
+        if (file == null) {
+            throw new IllegalStateException("无法获取外部存储文件目录");
+        } else if (file.exists()) {
+            if (!file.isDirectory()) {
+                throw new IllegalStateException(file.getAbsolutePath() + "已经存在并且不是目录");
+            }
         } else {
-            return Environment.getDataDirectory().getAbsolutePath() + "/data/"; // filePath:
-            // /data/data/
+            if (!file.mkdirs()) {
+                throw new IllegalStateException("无法创建目录: " + file.getAbsolutePath());
+            }
         }
+        return file.getAbsolutePath();
+    }
+
+    private static File getRootCachePath() {
+        return x.app().getExternalCacheDir();
+    }
+
+    private static File getRootFilePath(String dir) {
+        return x.app().getExternalFilesDir(dir);
     }
 
     /**

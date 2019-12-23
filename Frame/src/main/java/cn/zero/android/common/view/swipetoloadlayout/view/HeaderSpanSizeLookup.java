@@ -1,6 +1,6 @@
 package cn.zero.android.common.view.swipetoloadlayout.view;
 
-import android.support.v7.widget.GridLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 /**
  * RecyclerView为GridLayoutManager时，设置了HeaderView，就会用到这个SpanSizeLookup

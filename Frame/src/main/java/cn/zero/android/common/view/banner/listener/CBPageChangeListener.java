@@ -1,6 +1,6 @@
 package cn.zero.android.common.view.banner.listener;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.ImageView;
 
 import java.util.ArrayList;

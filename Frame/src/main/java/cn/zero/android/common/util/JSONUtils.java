@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Json Utils
  *
- * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2012-5-12
+ * @deprecated 建议使用{@link cn.zero.android.common.util.GSONUtils}类中的方法解析json
  */
 @Deprecated
 public class JSONUtils {

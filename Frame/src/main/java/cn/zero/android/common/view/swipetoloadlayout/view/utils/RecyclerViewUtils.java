@@ -1,6 +1,6 @@
 package cn.zero.android.common.view.swipetoloadlayout.view.utils;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import cn.zero.android.common.view.swipetoloadlayout.view.HeaderAndFooterRecyclerViewAdapter;

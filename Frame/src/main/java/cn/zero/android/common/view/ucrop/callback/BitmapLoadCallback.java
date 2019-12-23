@@ -1,8 +1,8 @@
 package cn.zero.android.common.view.ucrop.callback;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import cn.zero.android.common.view.ucrop.model.ExifInfo;
 

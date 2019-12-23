@@ -60,8 +60,8 @@ public class VoiceRecorder {
             // file = File.createTempFile(PREFIX + userId, EXTENSION,
             // User.getVoicePath());
             voiceFileName = buildVoiceFileName();
-            voiceFilePath = FileManager.getRootFilePath() + x.dataSet().getAppConfig().getProgectFolder() + File.separator + PREFIX + File.separator + voiceFileName;
-            file = new File(voiceFilePath);
+            voiceFilePath = FileManager.getVoiceFilePath();
+            file = new File(voiceFilePath, voiceFileName);
             recorder.setOutputFile(file.getAbsolutePath());
             recorder.prepare();
             isRecording = true;
