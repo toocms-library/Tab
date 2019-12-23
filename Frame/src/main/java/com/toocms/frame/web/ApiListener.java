@@ -1,20 +1,17 @@
 package com.toocms.frame.web;
 
-import com.google.gson.JsonObject;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.JsonSyntaxException;
 import com.lzy.okgo.callback.AbsCallback;
+import com.toocms.frame.tool.AppManager;
 import com.toocms.frame.ui.BaseActivity;
 import com.toocms.frame.ui.BaseFragment;
-import com.toocms.frame.view.PromptInfo;
 import com.toocms.frame.web.modle.SimpleResponse;
 import com.toocms.frame.web.modle.TooCMSResponse;
 
-import org.xutils.common.util.LogUtil;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 import cn.zero.android.common.util.GSONUtils;
 import cn.zero.android.common.util.StringUtils;
@@ -24,8 +21,9 @@ import okhttp3.Response;
 /**
  * API调用的事件监听器
  *
- * @author Zero @date 2017-03-09
+ * @author Zero
  * @version 4.0
+ * @date 2017-03-09
  */
 public abstract class ApiListener<T> extends AbsCallback<T> {
 
@@ -55,12 +53,13 @@ public abstract class ApiListener<T> extends AbsCallback<T> {
             return (T) tooCMSResponse;
         } else {
             response.close();
-            throw new IllegalStateException("无法解析的类型");
+            return GSONUtils.fromJson(json, rawType);
         }
     }
 
     @Override
     public void onSuccess(com.lzy.okgo.model.Response<T> response) {
+        onComplete(response);
         if (StringUtils.equals(((TooCMSResponse) response.body()).getFlag(), "success")) {
             onComplete(response.body(), response.getRawCall(), response.getRawResponse());
         } else {
@@ -70,22 +69,30 @@ public abstract class ApiListener<T> extends AbsCallback<T> {
         }
         Object tag = response.getRawCall().request().tag();
         if (tag instanceof BaseActivity) {
-            ((BaseActivity) tag).removeProgress();
+            ((BaseActivity) tag).removeProgress(tag);
         } else if (tag instanceof BaseFragment) {
-            ((BaseFragment) tag).removeProgress();
-        } else {
-            LogUtil.e("Application");
+            ((BaseFragment) tag).removeProgress(tag);
         }
     }
 
     @Override
     public void onError(com.lzy.okgo.model.Response<T> response) {
         super.onError(response);
-        onException(response.getRawCall(), response.getRawResponse(), response.getException());
+        onException(response.getRawCall(), response.getException());
     }
 
     /**
-     * 数据请求成功回调
+     * 数据请求成功回调，用于处理特殊返回格式<br/>
+     * 与{@link #onComplete(Object, Call, Response)、{@link #onError(String, Call, Response)}保持唯一使用即可
+     *
+     * @param response }
+     */
+    public void onComplete(com.lzy.okgo.model.Response response) {
+    }
+
+    /**
+     * 数据请求成功回调<br/>
+     * 与{@link #onComplete(com.lzy.okgo.model.Response)}保持唯一使用即可
      *
      * @param data     返回的data字段下的数据
      * @param call
@@ -101,14 +108,18 @@ public abstract class ApiListener<T> extends AbsCallback<T> {
      * @param response
      */
     public void onError(String error, Call call, Response response) {
-        PromptInfo.getInstance().showToast(call.request().tag(), error);
+        AppCompatActivity appCompatActivity = AppManager.getInstance().getTopActivity();
+        if (null != appCompatActivity && appCompatActivity instanceof BaseActivity)
+            ((BaseActivity) appCompatActivity).showToast(error);
     }
 
     /**
-     * 附加回调，用于处理flag为error时data中的数据
+     * 附加回调，用于处理flag为error时data中的数据<br/>
      *
      * @param data
+     * @deprecated {@link #onComplete(com.lzy.okgo.model.Response)}方法回调进行处理特殊返回格式
      */
+    @Deprecated
     public void onError(String data) {
     }
 
@@ -116,17 +127,11 @@ public abstract class ApiListener<T> extends AbsCallback<T> {
      * 出现网络问题等未知异常时会回调此方法
      *
      * @param call
-     * @param response
      * @param e
      */
-    public void onException(Call call, Response response, Throwable e) {
-        Object tag = call.request().tag();
-        if (tag instanceof BaseActivity) {
-            ((BaseActivity) tag).onException(call.request().toString(), e);
-        } else if (tag instanceof BaseFragment) {
-            ((BaseFragment) tag).onException(call.request().toString(), e);
-        } else {
-            LogUtil.e("Application");
-        }
+    public void onException(Call call, Throwable e) {
+        AppCompatActivity appCompatActivity = AppManager.getInstance().getTopActivity();
+        if (null != appCompatActivity && appCompatActivity instanceof BaseActivity)
+            ((BaseActivity) appCompatActivity).onException(call.request(), e);
     }
 }
