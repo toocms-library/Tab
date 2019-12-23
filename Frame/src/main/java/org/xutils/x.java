@@ -5,8 +5,6 @@ import android.content.Context;
 
 import com.toocms.frame.config.BaseDataSet;
 
-import org.xutils.db.DbManagerImpl;
-
 import java.lang.reflect.Method;
 
 /**
@@ -39,10 +37,6 @@ public final class x {
 
     public static <T extends BaseDataSet> T dataSet() {
         return (T) Ext.dataSet;
-    }
-
-    public static DbManager getDb(DbManager.DaoConfig daoConfig) {
-        return DbManagerImpl.getInstance(daoConfig);
     }
 
     public static class Ext {
