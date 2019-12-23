@@ -42,6 +42,7 @@ import okhttp3.OkHttpClient;
  */
 public class WeApplication extends Application {
 
+    private final long REQUEST_TIMEOUT = 15000;      //网络请求超时时间
     private final String PREF_USERINFO = "user_info";
 
     /**
@@ -67,14 +68,12 @@ public class WeApplication extends Application {
     /**
      * 该方法因为是整个程序的入口，所以主要就是初始化数据
      * 1、xUtils的初始化，说是xUtils其实只剩下Database模块了以及添加了{@link Dataset}的初始化
-     * 2、初始化{@link AutoLayoutActivity}
-     * 3、{@link #instance}的初始化
-     * 4、App管理类{@link AppManager#instance}的初始化
-     * 5、网络框架{@link OkGo}的初始化
-     * 6、崩溃异常捕捉器{@link CrashReport}的初始化
-     * 7、验证框架可用性，当服务器中存在项目包名时才可用，所以当新建一个项目时需要往服务器添加包名
-     * 8、{@link #start()}方法的调用
-     * 9、初始化用户信息{@link #initUserInfo()}
+     * 2、{@link #instance}的初始化
+     * 3、网络框架{@link OkGo}的初始化
+     * 4、崩溃异常捕捉器{@link CrashReport}的初始化
+     * 5、验证框架可用性，当服务器中存在项目包名时才可用，所以当新建一个项目时需要往服务器添加包名
+     * 6、{@link #start()}方法的调用
+     * 7、初始化用户信息{@link #initUserInfo()}
      */
     @Override
     public void onCreate() {
@@ -83,7 +82,6 @@ public class WeApplication extends Application {
         x.Ext.init(this);
         x.Ext.setDebug(BuildConfig.DEBUG);
         instance = this;
-        AppManager.instance = this;
         // 初始化OkGo
         initOkGo();
         // 初始化崩溃异常捕捉器
@@ -142,10 +140,10 @@ public class WeApplication extends Application {
         interceptor.setPrintLevel(HttpLoggingInterceptor.Level.BODY); // log打印级别，决定了log显示的详细程度
         interceptor.setColorLevel(Level.INFO); // log颜色级别，决定了log在控制台显示的颜色
         builder.addInterceptor(interceptor); // 添加OkGo默认debug日志
-        // 超时时间设置，默认60秒
-        builder.readTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);      //全局的读取超时时间
-        builder.writeTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);     //全局的写入超时时间
-        builder.connectTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);   //全局的连接超时时间
+        // 超时时间设置，10秒
+        builder.readTimeout(REQUEST_TIMEOUT, TimeUnit.MILLISECONDS);      //全局的读取超时时间
+        builder.writeTimeout(REQUEST_TIMEOUT, TimeUnit.MILLISECONDS);     //全局的写入超时时间
+        builder.connectTimeout(REQUEST_TIMEOUT, TimeUnit.MILLISECONDS);   //全局的连接超时时间
         // 自动管理cookie
         builder.cookieJar(new CookieJarImpl(new DBCookieStore(this))); // 使用数据库保持cookie，如果cookie不过期，则一直有效
         // https相关设置
@@ -161,25 +159,14 @@ public class WeApplication extends Application {
     }
 
     /**
-     * 获取屏幕的宽高以及创建文件夹
-     * 1、屏幕的宽高属性{@link Settings#displayWidth}、{@link Settings#displayHeight}
-     * 2、压缩文件路径{@link FileManager#getCompressFilePath()}
-     * 3、崩溃日志路径{@link FileManager#getCrashLogFilePath()}
-     * 4、录音文件存储路径{@link FileManager#getVoiceFilePath()}
-     * 5、下载文档存储路径{@link FileManager#getDownloadPath()}
-     * 6、缓存文件存储路径{@link FileManager#getCachePath()}
+     * 获取屏幕的宽高以及创建文件夹<br/>
+     * 屏幕的宽高属性{@link Settings#displayWidth}、{@link Settings#displayHeight}
      */
     private void start() {
         // 获得屏幕宽度（像素）
         Settings.displayWidth = Toolkit.getScreenWidth(this);
         // 获得屏幕高度（像素）
         Settings.displayHeight = Toolkit.getScreenHeight(this);
-        // 创建路径
-        new File(FileManager.getCompressFilePath()).mkdirs();
-        new File(FileManager.getCrashLogFilePath()).mkdirs();
-        new File(FileManager.getVoiceFilePath()).mkdirs();
-        new File(FileManager.getDownloadPath()).mkdirs();
-        new File(FileManager.getCachePath()).mkdirs();
     }
 
     private void finish() {

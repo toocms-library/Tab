@@ -2,10 +2,8 @@ package com.toocms.frame.view;
 
 import android.os.Handler;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Toast;
-
-import com.toocms.frame.ui.BaseActivity;
-import com.toocms.frame.ui.BaseFragment;
 
 import org.xutils.x;
 
@@ -41,25 +39,21 @@ public class PromptInfo {
         return promptInfo;
     }
 
-    public void showToast(Object object, CharSequence text) {
-        setText(object, text);
+    public void showToast(View view, CharSequence text) {
+        setText(view, text);
     }
 
-    public void showToast(Object object, int resId) {
-        setText(object, x.app().getResources().getText(resId));
+    public void showToast(View view, int resId) {
+        setText(view, x.app().getResources().getText(resId));
     }
 
     public void setDuration(int duration) {
         this.duration = duration;
     }
 
-    private void setText(Object object, CharSequence text) {
+    private void setText(View view, CharSequence text) {
         if (x.dataSet().getAppConfig().isUseSnackBar()) {
-            if (object instanceof BaseActivity) {
-                TSnackbar.make(((BaseActivity) object).getContent(), text, TSnackbar.LENGTH_SHORT).show();
-            } else if (object instanceof BaseFragment) {
-                TSnackbar.make(((BaseFragment) object).getContent(), text, TSnackbar.LENGTH_SHORT).show();
-            }
+            TSnackbar.make(view, text, TSnackbar.LENGTH_SHORT).show();
         } else {
             handler.removeCallbacks(runnable);
             if (toast != null) {

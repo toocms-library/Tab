@@ -1,7 +1,8 @@
 package com.toocms.frame.image;
 
-import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
 
 import com.toocms.frame.image.cache.CacheCallback;
 import com.toocms.frame.image.cache.ImageCacheAsyncTask;
@@ -27,7 +28,6 @@ public class ImageLoader {
     /**
      * 通过URL加载图片
      *
-     * @param glide
      * @param url
      * @param imageView
      * @param loadingImage
@@ -39,7 +39,6 @@ public class ImageLoader {
     /**
      * 加载资源图片
      *
-     * @param glide
      * @param resId
      * @param imageView
      * @param loadingImage
@@ -51,7 +50,6 @@ public class ImageLoader {
     /**
      * 通过FILE加载图片
      *
-     * @param glide
      * @param file
      * @param imageView
      * @param loadingImage
@@ -63,8 +61,7 @@ public class ImageLoader {
     /**
      * 通过FILE加载图片
      *
-     * @param glide
-     * @param file
+     * @param localPath
      * @param imageView
      * @param loadingImage
      */
@@ -75,7 +72,6 @@ public class ImageLoader {
     /**
      * 通过URL加载圆形图片
      *
-     * @param glide
      * @param url
      * @param imageView
      * @param loadingImage
@@ -87,7 +83,6 @@ public class ImageLoader {
     /**
      * 加载资源文件为圆形图片
      *
-     * @param glide
      * @param resId
      * @param imageView
      * @param loadingImage
@@ -99,7 +94,6 @@ public class ImageLoader {
     /**
      * 通过URL加载圆角图片
      *
-     * @param context
      * @param url
      * @param imageView
      * @param loadingImage
@@ -112,7 +106,6 @@ public class ImageLoader {
     /**
      * 加载资源文件为圆角图片
      *
-     * @param glide
      * @param resId
      * @param imageView
      * @param loadingImage
@@ -125,7 +118,6 @@ public class ImageLoader {
     /**
      * 通过URL获取图片文件
      *
-     * @param glide
      * @param url
      * @param callback
      */

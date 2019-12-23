@@ -14,10 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +21,11 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import com.toocms.frame.config.Settings;
 import com.toocms.frame.ui.BaseActivity;
@@ -35,7 +36,6 @@ import com.toocms.frame.ui.imageselector.adapter.ImageGridAdapter;
 import com.toocms.frame.ui.imageselector.bean.Folder;
 import com.toocms.frame.ui.imageselector.bean.Image;
 import com.toocms.frame.ui.imageselector.utils.FileUtils;
-import com.toocms.frame.view.PromptInfo;
 
 import org.xutils.common.util.LogUtil;
 
@@ -141,7 +141,6 @@ public class SelectImageAty extends BaseActivity {
     private Button btnSubmit;
     // 底部View
     private View popupAnchorView;
-    private PromptInfo promptInfo = PromptInfo.getInstance();
 
     private Thread thread; // 图片压缩处理线程
     private File tmpFile;
@@ -155,17 +154,14 @@ public class SelectImageAty extends BaseActivity {
     // 裁剪类型
     private int cropType = CropType.TYPE_SQUARE;
 
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            removeProgress();
-            // 返回已选择的图片数据
-            Intent data = new Intent();
-            data.putStringArrayListExtra(EXTRA_RESULT, resultList);
-            setResult(RESULT_OK, data);
-            finish();
-            return false;
-        }
+    private Handler handler = new Handler(msg -> {
+        removeProgress(SelectImageAty.this);
+        // 返回已选择的图片数据
+        Intent data = new Intent();
+        data.putStringArrayListExtra(EXTRA_RESULT, resultList);
+        setResult(RESULT_OK, data);
+        finish();
+        return false;
     });
 
     @Override
@@ -176,12 +172,9 @@ public class SelectImageAty extends BaseActivity {
         // 初始化控件
         initControls();
         // 返回按钮
-        findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setResult(RESULT_CANCELED);
-                finish();
-            }
+        findViewById(R.id.btn_back).setOnClickListener(view -> {
+            setResult(RESULT_CANCELED);
+            finish();
         });
 
         // 完成按钮
@@ -197,14 +190,11 @@ public class SelectImageAty extends BaseActivity {
             public void onClick(View view) {
                 if (resultList != null && resultList.size() > 0) {
                     showProgress();
-                    thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            for (int i = 0; i < ListUtils.getSize(resultList); i++) {
-                                resultList.set(i, ImageUtils.compressImage(resultList.get(i)).getAbsolutePath());
-                            }
-                            handler.sendEmptyMessage(0);
+                    thread = new Thread(() -> {
+                        for (int i = 0; i < ListUtils.getSize(resultList); i++) {
+                            resultList.set(i, ImageUtils.compressImage(resultList.get(i)).getAbsolutePath());
                         }
+                        handler.sendEmptyMessage(0);
                     });
                     thread.start();
                 }
@@ -337,10 +327,10 @@ public class SelectImageAty extends BaseActivity {
 
     private void initControls() {
         popupAnchorView = findViewById(R.id.footer);
-        tvCategory = (TextView) findViewById(R.id.category_btn);
-        btnPreview = (Button) findViewById(R.id.preview);
-        gridView = (GridView) findViewById(R.id.grid);
-        btnSubmit = (Button) findViewById(R.id.commit);
+        tvCategory = findViewById(R.id.category_btn);
+        btnPreview = findViewById(R.id.preview);
+        gridView = findViewById(R.id.grid);
+        btnSubmit = findViewById(R.id.commit);
     }
 
     @Override
@@ -422,7 +412,7 @@ public class SelectImageAty extends BaseActivity {
                         folderPopupWindow.dismiss();
 
                         if (index == 0) {
-                            getSupportLoaderManager().restartLoader(LOADER_ALL, null, loaderCallback);
+                            LoaderManager.getInstance(SelectImageAty.this).restartLoader(LOADER_ALL, null, loaderCallback);
                             tvCategory.setText(R.string.folder_all);
                             if (isShowCamera) {
                                 imageAdapter.setShowCamera(true);
@@ -485,10 +475,10 @@ public class SelectImageAty extends BaseActivity {
                 }
                 startActivityForResult(cameraIntent, REQUEST_CAMERA);
             } else {
-                promptInfo.showToast(this, R.string.image_fail);
+                showToast(R.string.image_fail);
             }
         } else {
-            promptInfo.showToast(this, R.string.msg_no_camera);
+            showToast(R.string.msg_no_camera);
         }
     }
 
@@ -520,7 +510,7 @@ public class SelectImageAty extends BaseActivity {
                 } else {
                     // 判断选择数量问题
                     if (desireImageCount == resultList.size()) {
-                        promptInfo.showToast(this, R.string.msg_amount_limit);
+                        showToast(R.string.msg_amount_limit);
                         return;
                     }
 
@@ -556,7 +546,7 @@ public class SelectImageAty extends BaseActivity {
 
     // 开始裁剪（只限于单选）
     private void beginCrop(File sourceFile) {
-        UCrop uCrop = UCrop.of(Uri.fromFile(sourceFile), Uri.fromFile(new File(FileManager.getCompressFilePath(), System.currentTimeMillis() + ".jpg")));
+        UCrop uCrop = UCrop.of(Uri.fromFile(sourceFile), Uri.fromFile(new File(FileManager.getCachePath(), System.currentTimeMillis() + ".0")));
         UCrop.Options options = new UCrop.Options();
         switch (cropType) {
             case CropType.TYPE_FREESTYLE: // 自由选择

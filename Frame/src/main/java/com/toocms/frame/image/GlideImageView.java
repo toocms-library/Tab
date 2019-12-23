@@ -1,9 +1,10 @@
 package com.toocms.frame.image;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -22,6 +23,7 @@ import com.toocms.frame.image.transform.GlideRoundTransform;
  *
  * @version v1.0
  */
+@SuppressLint("AppCompatCustomView")
 public class GlideImageView extends ImageView {
 
     private boolean enableState = false;

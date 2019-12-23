@@ -1,20 +1,9 @@
 package com.toocms.frame.crash;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.Application;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Environment;
-import android.os.StatFs;
 import android.util.Log;
-
-import org.xutils.x;
-
-import java.io.File;
-import java.security.MessageDigest;
-import java.util.Iterator;
-import java.util.List;
 
 import cn.zero.android.common.util.FileManager;
 
@@ -75,61 +64,6 @@ public class CrashLogUtils {
         }
     }
 
-    public static String getProcessName(Application app, int pid) {
-        ActivityManager am = (ActivityManager) app.getApplicationContext().getSystemService(Activity.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> processes = am.getRunningAppProcesses();
-        Iterator<ActivityManager.RunningAppProcessInfo> it = processes.iterator();
-        while (it.hasNext()) {
-            ActivityManager.RunningAppProcessInfo info = it.next();
-            if (info.pid == pid) {
-                return info.processName;
-            }
-        }
-        return "";
-    }
-
-    public static long getInternalAvailableSize() {
-        File path = Environment.getDataDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long availableBlocks = stat.getAvailableBlocks();
-        return availableBlocks * blockSize;
-    }
-
-    public static long getInternalTotalSize() {
-        File path = Environment.getDataDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long blockCount = stat.getBlockCount();
-        return blockCount * blockSize;
-    }
-
-    public static long getExternalAvailableSize() {
-        File path = Environment.getExternalStorageDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long availableBlocks = stat.getAvailableBlocks();
-        return availableBlocks * blockSize;
-    }
-
-    public static long getExternalTotalSize() {
-        File path = Environment.getExternalStorageDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long blockCount = stat.getBlockCount();
-        return blockCount * blockSize;
-    }
-
-    public static int getVersionCode(Application app) {
-        try {
-            PackageInfo packageInfo = app.getPackageManager().getPackageInfo(app.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
     public static String getVersionName(Application app) {
         String versionName = "";
         try {
@@ -142,45 +76,7 @@ public class CrashLogUtils {
         return versionName;
     }
 
-    public static String getCrashId(String versionName, String cause, String detailMessage, StackTraceElement[] stList) {
-        StringBuilder buff = new StringBuilder();
-        buff.append(versionName);
-        buff.append(cause);
-        buff.append(detailMessage);
-        if (stList != null) {
-            for (int i = 0; i < stList.length; i++) {
-                StackTraceElement st = stList[i];
-                buff.append(st.toString());
-            }
-        }
-        return toMD5(buff.toString());
-    }
-
-    public static String toMD5(String input) {
-        try {
-            char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
-                    '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-
-            byte[] btInput = input.getBytes();
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(btInput);
-            byte[] digest = md.digest();
-
-            char str[] = new char[16 * 2];
-            int k = 0;
-            for (int i = 0; i < 16; i++) {
-                byte byte0 = digest[i];
-                str[k++] = hexDigits[byte0 >>> 4 & 0xf];
-                str[k++] = hexDigits[byte0 & 0xf];
-            }
-            return new String(str);
-        } catch (Exception ex) {
-            Log.d(CrashConfig.TAG, "MD5 failed.", ex);
-        }
-        return null;
-    }
-
-    public static String getLogStorageDir(Application app) {
+    public static String getLogStorageDir() {
         return FileManager.getCrashLogFilePath();
     }
 }

@@ -145,7 +145,7 @@ public class FolderAdapter extends BaseAdapter {
             }
             // 显示图片
             if (data.cover != null) {
-                ImageLoader.loadUrl2Image(data.cover.path, cover, R.drawable.default_error);
+                ImageLoader.loadFile2Image(data.cover.path, cover, R.drawable.default_error);
             } else {
                 cover.setImageResource(R.drawable.default_error);
             }

@@ -1,6 +1,7 @@
 package com.toocms.frame.ui.imageselector.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import com.toocms.frame.image.ImageLoader;
 import com.toocms.frame.ui.R;
 import com.toocms.frame.ui.imageselector.bean.Image;
+
+import org.xutils.common.util.LogUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -221,10 +224,9 @@ public class ImageGridAdapter extends BaseAdapter {
             } else {
                 indicator.setVisibility(View.GONE);
             }
-            File imageFile = new File(data.path);
-            if (imageFile.exists()) {
+            if (data != null) {
                 // 显示图片
-                ImageLoader.loadFile2Image(imageFile, image, R.drawable.default_error);
+                ImageLoader.loadFile2Image(data.path, image, R.drawable.default_error);
             } else {
                 image.setImageResource(R.drawable.default_error);
             }

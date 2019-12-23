@@ -61,7 +61,7 @@ public class CrashLogSender {
     };
 
     private void checkSdkVersion(Application app) {
-        File logStorageDir = new File(CrashLogUtils.getLogStorageDir(app));
+        File logStorageDir = new File(CrashLogUtils.getLogStorageDir());
         if (!logStorageDir.exists()) {
             logStorageDir.mkdirs();
         }
@@ -83,7 +83,7 @@ public class CrashLogSender {
     }
 
     public void sendHttpRequest(HttpParams params) {
-        new ApiTool<TooCMSResponse<Void>>().postApi(CrashConfig.REPORT_URL, params, new ApiListener<TooCMSResponse<Void>>() {
+        new ApiTool<TooCMSResponse<Void>>().postApi(x.app(), CrashConfig.REPORT_URL, params, new ApiListener<TooCMSResponse<Void>>() {
             @Override
             public void onComplete(TooCMSResponse<Void> data, Call call, Response response) {
                 LogUtil.e(data.getMessage());
@@ -113,7 +113,7 @@ public class CrashLogSender {
     }
 
     private void reportCrashLogs() throws IOException {
-        File dir = new File(CrashLogUtils.getLogStorageDir(mApp));
+        File dir = new File(CrashLogUtils.getLogStorageDir());
         File[] logs = dir.listFiles();
         if (logs == null || logs.length == 0) {
             return;

@@ -70,7 +70,7 @@ public class CrashReport implements Thread.UncaughtExceptionHandler {
             if (!CrashConfig.isAllowReportToHost() && mUncaughtExHandler != null) {
                 mUncaughtExHandler.uncaughtException(thread, ex);
             } else {
-                handleException(thread, ex);
+                handleException(ex);
                 Thread.sleep(2500);
                 // 退出程序
                 AppManager.getInstance().AppExit(mApp);
@@ -88,7 +88,7 @@ public class CrashReport implements Thread.UncaughtExceptionHandler {
      * @param ex
      * @return true:如果处理了该异常信息;否则返回false.
      */
-    private boolean handleException(Thread thread, Throwable ex) {
+    private boolean handleException(Throwable ex) {
         if (ex == null) {
             return false;
         }
@@ -97,27 +97,17 @@ public class CrashReport implements Thread.UncaughtExceptionHandler {
             @Override
             public void run() {
                 Looper.prepare();
-                progressDialog = new ProgressDialog(getContext());
+                progressDialog = new ProgressDialog(AppManager.getInstance().getTopActivity());
                 progressDialog.setMessage(mApp.getString(R.string.crash_message));
                 progressDialog.show();
                 Looper.loop();
             }
         }.start();
         try {
-            CrashLogStore.saveLogToFile(mApp, null, ex, thread);
+            CrashLogStore.saveLogToFile(mApp, null, ex);
         } catch (IOException e) {
             Log.e(CrashConfig.TAG, "Save crash log failed. ", e);
         }
         return true;
-    }
-
-    private Context getContext() {
-        if (AppManager.instance instanceof BaseActivity) {
-            return (BaseActivity) AppManager.instance;
-        } else if (AppManager.instance instanceof BaseFragment) {
-            return ((BaseFragment) AppManager.instance).getContext();
-        } else {
-            return x.app();
-        }
     }
 }

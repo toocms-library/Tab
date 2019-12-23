@@ -29,7 +29,11 @@ public class VerificationService {
     private String prompt_language = null;
 
     public static VerificationService getInstance() {
-        if (instance == null) instance = new VerificationService();
+        if (instance == null)
+            synchronized (VerificationService.class) {
+                if (instance == null)
+                    instance = new VerificationService();
+            }
         return instance;
     }
 
@@ -42,7 +46,7 @@ public class VerificationService {
             HttpParams params = new HttpParams();
             params.put("pack", x.app().getPackageName().replace(".", "_"));
             params.put("type", "1");
-            new ApiTool<TooCMSResponse<Void>>().postApi("http://twp.toocms.com/PaCheck/Docheck",
+            new ApiTool<TooCMSResponse<Void>>().postApi(x.app(), "http://twp.toocms.com/PaCheck/Docheck",
                     params, new ApiListener<TooCMSResponse<Void>>() {
                         @Override
                         public void onComplete(TooCMSResponse<Void> data, Call call, Response response) {

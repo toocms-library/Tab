@@ -5,14 +5,11 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.lzy.okgo.model.HttpParams;
 import com.toocms.frame.ui.R;
 
 import org.xutils.common.util.LogUtil;
-import org.xutils.x;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -27,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import cn.zero.android.common.util.DigestUtils;
 import cn.zero.android.common.util.StringUtils;
 import cn.zero.android.common.util.TimeUtils;
 
@@ -57,7 +55,7 @@ public class CrashLogStore {
                 } else if (lineNum == 1) {
                     flag.append(line);
                     LogUtil.e(flag.toString());
-                    params.put("flag_md5", CrashLogUtils.toMD5(flag.toString()));
+                    params.put("flag_md5", DigestUtils.md5(flag.toString()));
                 } else {
                     sb.append(line);
                     sb.append("<br/>");
@@ -74,15 +72,6 @@ public class CrashLogStore {
     }
 
     public static void writeDataHeader(Application app, HttpParams params) {
-//        sb.append("----------------------------- 系统 ---------------------------<br/>");
-////        String model = android.os.Build.MODEL;
-//        sb.append("手机型号：" + Build.MODEL + "<br/>");
-////        int sdkLevel = android.os.Build.VERSION.SDK_INT;
-//        sb.append("SDK版本：" + Build.VERSION.SDK_INT + "<br/>");
-////        String sdkRelease = android.os.Build.VERSION.RELEASE;
-//        sb.append("系统版本：" + Build.VERSION.RELEASE + "<br/>");
-////        String packageName = app.getPackageName();
-//        sb.append("包名：" + app.getPackageName() + "<br/>");
         params.put("p_flag", app.getString(R.string.app_name)); // 项目名
         params.put("shoujixinghao", Build.BRAND);   // 手机型号
         params.put("xitongbanben", Build.VERSION.RELEASE);  // 系统版本
@@ -99,13 +88,11 @@ public class CrashLogStore {
         }
     }
 
-    public synchronized static void saveLogToFile(Application app, String request, Throwable throwable, Thread thread) throws IOException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss",
-                Locale.getDefault());
-        String fileName = CrashConfig.LOG_FILE_PREFIX
-                + dateFormat.format(new Date()) + CrashConfig.LOG_FILE_EXT;
+    public synchronized static void saveLogToFile(Application app, String request, Throwable throwable) throws IOException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss", Locale.getDefault());
+        String fileName = CrashConfig.LOG_FILE_PREFIX + dateFormat.format(new Date()) + CrashConfig.LOG_FILE_EXT;
 
-        File dir = new File(CrashLogUtils.getLogStorageDir(app));
+        File dir = new File(CrashLogUtils.getLogStorageDir());
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -120,45 +107,7 @@ public class CrashLogStore {
             sb = new StringBuffer();
             bw = new BufferedWriter(new FileWriter(file));
 
-//            //crash id
-//            int versionCode = CrashLogUtils.getVersionCode(app);
-//            sb.append("App版本号：" + versionCode + "\n");
-//            String versionName = CrashLogUtils.getVersionName(app);
-//            sb.append("App版本名称：" + versionName + "\n");
-//            String crashId = CrashLogUtils.getCrashId(versionName, throwable.getClass()
-//                            .getName(), throwable.getLocalizedMessage(),
-//                    throwable.getStackTrace());
-//            sb.append("日志编号：" + crashId + "\n");
-//
-//            // time
-//            sb.append("时间：" + TimeUtils.getCurrentTimeInString() + "\n\n");
-//
-//            sb.append("----------------------------- 内存 ---------------------------\n");
-//            // memory
-//            Runtime rt = Runtime.getRuntime();
-//            long allocMem;
-//            if (throwable instanceof OutOfMemoryError) {
-//                allocMem = rt.maxMemory();
-//            } else {
-//                allocMem = rt.totalMemory() - rt.freeMemory();
-//            }
-//            sb.append("分配内存：" + (allocMem / 1024 / 1024) + "M\n");
-//            sb.append("最大内存：" + (rt.maxMemory() / 1024 / 1024) + "M\n\n");
-//
-//            sb.append("----------------------------- 存储 ---------------------------\n");
-//            // storage
-//            sb.append("内部存储可用大小：" + CrashLogUtils.getInternalAvailableSize() / 1024 / 1024 + "M\n");
-//            sb.append("内部存储总大小：" + CrashLogUtils.getInternalTotalSize() / 1024 / 1024 + "M\n");
-//            sb.append("外部存储可用大小：" + CrashLogUtils.getExternalAvailableSize() / 1024 / 1024 + "M\n");
-//            sb.append("外部存储总大小：" + CrashLogUtils.getExternalTotalSize() / 1024 / 1024 + "M\n\n");
-//
-//            sb.append("----------------------------- 线程&进程 ---------------------------\n");
-//            // thread&process
-//            sb.append("线程名称：" + thread.getName() + "\n");
-//            sb.append("进程名称：" + CrashLogUtils.getProcessName(app, android.os.Process.myPid()) + "\n\n");
-//
-//            sb.append("----------------------------- 崩溃原因 ---------------------------\n");
-//            //message
+            //message
             sb.append(throwable.getClass().getName() + "\n");   // 错误名称
             sb.append(throwable.getLocalizedMessage() + "\n");  // 详细信息
             if (!StringUtils.isEmpty(request)) sb.append("网络请求：" + request + "\n\n");

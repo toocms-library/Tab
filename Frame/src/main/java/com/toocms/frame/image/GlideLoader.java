@@ -4,10 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
@@ -26,7 +27,6 @@ import java.lang.ref.WeakReference;
 public class GlideLoader {
 
     protected static final String ANDROID_RESOURCE = "android.resource://";
-    protected static final String FILE = "file://";
     protected static final String SEPARATOR = "/";
 
     private String url;
