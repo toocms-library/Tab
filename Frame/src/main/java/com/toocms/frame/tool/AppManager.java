@@ -1,8 +1,9 @@
 package com.toocms.frame.tool;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Iterator;
 import java.util.Stack;
@@ -14,8 +15,7 @@ import java.util.Stack;
  */
 public class AppManager {
 
-    public static Object instance;
-    private static Stack<Activity> mActivityStack;
+    private static Stack<AppCompatActivity> mActivityStack;
     private static AppManager mAppManager;
 
     private AppManager() {
@@ -34,9 +34,9 @@ public class AppManager {
     /**
      * 添加Activity到堆栈
      */
-    public void addActivity(Activity activity) {
+    public void addActivity(AppCompatActivity activity) {
         if (mActivityStack == null) {
-            mActivityStack = new Stack<Activity>();
+            mActivityStack = new Stack<>();
         }
         mActivityStack.add(activity);
     }
@@ -44,8 +44,8 @@ public class AppManager {
     /**
      * 获取栈顶Activity（堆栈中最后一个压入的）
      */
-    public Activity getTopActivity() {
-        Activity activity = mActivityStack.lastElement();
+    public AppCompatActivity getTopActivity() {
+        AppCompatActivity activity = mActivityStack.lastElement();
         return activity;
     }
 
@@ -53,14 +53,14 @@ public class AppManager {
      * 结束栈顶Activity（堆栈中最后一个压入的）
      */
     public void killTopActivity() {
-        Activity activity = mActivityStack.lastElement();
+        AppCompatActivity activity = mActivityStack.lastElement();
         killActivity(activity);
     }
 
     /**
      * 结束指定的Activity
      */
-    public void killActivity(Activity activity) {
+    public void killActivity(AppCompatActivity activity) {
         if (activity != null) {
             mActivityStack.remove(activity);
             activity.finish();
@@ -69,12 +69,40 @@ public class AppManager {
     }
 
     /**
+     * 根据localClassName获取activity
+     *
+     * @param localClassName 去除主包名前缀的activity类名
+     * @return localClassName所对应的activity
+     */
+    public AppCompatActivity getActivityByLocalClassName(String localClassName) {
+        Iterator<AppCompatActivity> iterator = mActivityStack.iterator();
+        while (iterator.hasNext()) {
+            AppCompatActivity activity = iterator.next();
+            if (activity.getLocalClassName().equals(localClassName)) {
+                return activity;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 移除在栈顶却已经调用finish的aty
+     */
+    public void removeTopFinshedActivity() {
+        AppCompatActivity activity = getTopActivity();
+        if (activity.isFinishing()) {
+            mActivityStack.remove(activity);
+            activity = null;
+        }
+    }
+
+    /**
      * 结束指定类名的Activity
      */
     public void killActivity(Class<?> cls) {
-        Iterator<Activity> iterator = mActivityStack.iterator();
+        Iterator<AppCompatActivity> iterator = mActivityStack.iterator();
         while (iterator.hasNext()) {
-            Activity activity = iterator.next();
+            AppCompatActivity activity = iterator.next();
             if (activity.getClass().equals(cls)) {
                 iterator.remove();
                 activity.finish();
