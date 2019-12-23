@@ -4,45 +4,39 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.lzy.okgo.OkGo;
 import com.toocms.frame.config.Constants;
+import com.toocms.frame.config.IAppConfig;
 import com.toocms.frame.config.WeApplication;
-import com.toocms.frame.crash.CrashConfig;
-import com.toocms.frame.crash.CrashLogSender;
-import com.toocms.frame.crash.CrashLogStore;
 import com.toocms.frame.fragment.IBaseFragement;
-import com.toocms.frame.tool.AppManager;
 import com.toocms.frame.ui.imageselector.SelectImageAty;
-import com.toocms.frame.view.PromptInfo;
-import com.toocms.frame.view.progress.ProgressDialog;
 import com.umeng.analytics.MobclickAgent;
 
-import java.io.InterruptedIOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.net.UnknownServiceException;
+import org.xutils.common.util.LogUtil;
+
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import cn.zero.android.common.permission.PermissionGen;
 import cn.zero.android.common.util.ListUtils;
-import okhttp3.Call;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * 主Fragment类，继承此类之后才能使用BaseAty中的与Fragment交互的方法<br/>
@@ -57,9 +51,8 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
     private FrameLayout titlebar;
     private FrameLayout content;
     private View divider; // Titlebar和Content之间的分割线
-    private View progress;
-    private View error;
-    private ProgressDialog progressDialog;
+    protected View progress;
+    protected View error;
     private AlertDialog.Builder builder;
 
     protected WeApplication application;
@@ -84,7 +77,6 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
      * 是否第一次加载
      */
     private boolean isFirstLoad = true;
-    private boolean isShowContent;
     protected boolean hasAnimiation = true;
 
     @Override
@@ -110,10 +102,8 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        AppManager.instance = this;
         onCreateFragment(savedInstanceState);
         // 请求数据
-        showContent = true;
         requestData();
     }
 
@@ -144,14 +134,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
     @Override
     public void onResume() {
         super.onResume();
-        if (isVisible) {
-            AppManager.instance = this;
-        }
-        showStatus("onResume");
         MobclickAgent.onPageStart(this.getClass().getSimpleName());
-        showContent = true;
-        if (null != handler)
-            handler.postDelayed(runnable, 300);
     }
 
     @Override
@@ -162,8 +145,6 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
 
     @Override
     public void onDestroy() {
-        if (null != handler) handler = null;
-        if (null != runnable) runnable = null;
         OkGo.getInstance().cancelTag(this);
         if (null != presenter) presenter.dettach();
         super.onDestroy();
@@ -172,23 +153,14 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
     @Override
     public void onComeIn(Object data) {
         mDataIn = data;
-        showStatus("onComeIn");
     }
 
     @Override
     public void onLeave() {
-        showStatus("onLeave");
     }
 
     @Override
     public void onBack(Object data) {
-        showStatus("onBack");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        showStatus("onStop");
     }
 
     protected void onVisible() {
@@ -196,10 +168,6 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
     }
 
     protected void onInvisible() {
-    }
-
-    private void showStatus(String status) {
-        Log.d("test", String.format("%s %s", this.getClass().getName(), status));
     }
 
     protected void lazyLoad() {
@@ -219,19 +187,15 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
         divider = layout.findViewById(R.id.content_divider);
         // 给最底层的layout设置一个点击监听防止切换页面之后还会点击到别的页面的BUG
         content.setOnClickListener(null);
-        progress = View.inflate(getActivity(), R.layout.loading_content, null);
+        progress = layout.findViewById(R.id.loading);
         progress.setOnClickListener(null);
-        error = View.inflate(getActivity(), R.layout.layout_error, null);
-        error.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                requestData();
-                onResume();
-                content.removeView(error);
-            }
+        error = layout.findViewById(R.id.error);
+        error.setOnClickListener(v -> {
+            getContext().resetShowContent();
+            error.setVisibility(GONE);
+            requestData();
+            onResume();
         });
-        progressDialog = new ProgressDialog(getContext());
     }
 
     /**
@@ -268,7 +232,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
      * 向用户展示信息前的准备工作在这个方法里处理
      */
     private void preliminary() {
-        application = (WeApplication) getActivity().getApplication();
+        application = getContext().application;
         // 初始化数据
         initialized();
         // 初始化Presenter
@@ -423,7 +387,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
      * @param message
      */
     protected void showDialog(String title, String message) {
-        showDialog(title, message, "确定", null);
+        getContext().showDialog(title, message);
     }
 
     /**
@@ -435,11 +399,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
      * @param listener
      */
     protected void showDialog(String title, String message, String positiveText, DialogInterface.OnClickListener listener) {
-        builder = new AlertDialog.Builder(getActivity());
-        if (!TextUtils.isEmpty(title)) builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setPositiveButton(positiveText, listener);
-        builder.create().show();
+        getContext().showDialog(title, message, positiveText, listener);
     }
 
     /**
@@ -453,12 +413,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
      * @param negativeListener
      */
     protected void showDialog(String title, String message, String positiveText, String negativeText, DialogInterface.OnClickListener positiveListener, DialogInterface.OnClickListener negativeListener) {
-        builder = new AlertDialog.Builder(getActivity());
-        if (!TextUtils.isEmpty(title)) builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setPositiveButton(positiveText, positiveListener);
-        builder.setNegativeButton(negativeText, negativeListener);
-        builder.create().show();
+        getContext().showDialog(title, message, positiveText, negativeText, positiveListener, negativeListener);
     }
 
     /**
@@ -469,10 +424,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
      * @param listener
      */
     protected void showItemsDialog(String title, int itemsId, DialogInterface.OnClickListener listener) {
-        builder = new AlertDialog.Builder(getActivity());
-        if (!TextUtils.isEmpty(title)) builder.setTitle(title);
-        builder.setItems(itemsId, listener);
-        builder.create().show();
+        getContext().showItemsDialog(title, itemsId, listener);
     }
 
     /**
@@ -483,96 +435,44 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
      * @param listener
      */
     protected void showItemsDialog(String title, CharSequence[] items, DialogInterface.OnClickListener listener) {
-        builder = new AlertDialog.Builder(getActivity());
-        if (!TextUtils.isEmpty(title)) builder.setTitle(title);
-        builder.setItems(items, listener);
-        builder.create().show();
+        getContext().showItemsDialog(title, items, listener);
     }
 
     // ====================== Toast ==========================
 
+    /**
+     * 以{@link Toast}/{@link Snackbar}的形式弹出提示信息<br/>
+     * 通过设置{@link IAppConfig#isUseSnackBar()}回调方法来决定以哪种方式弹出
+     *
+     * @param text 提示文本
+     */
     public void showToast(CharSequence text) {
-        PromptInfo.getInstance().showToast(this, text);
+        getContext().showToast(text);
     }
 
+    /**
+     * 以{@link Toast}/{@link Snackbar}的形式弹出提示信息<br/>
+     * 通过设置{@link IAppConfig#isUseSnackBar()}回调方法来决定以哪种方式弹出
+     *
+     * @param resId 提示文本的ID
+     */
     public void showToast(int resId) {
-        PromptInfo.getInstance().showToast(this, resId);
+        getContext().showToast(resId);
     }
 
     // ===================== 加载条 ==================
 
-    private boolean isShowing = false;
-    private boolean showContent; // 网络加载时是否显示content加载框
-    private Handler handler = new Handler();
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            showContent = false;
-        }
-    };
-
-    private void showProgressContent() {
-        if (isShowing) return;
-        isShowContent = true;
-        isShowing = true;
-        content.addView(progress);
-    }
-
-    private void removeProgressContent() {
-        if (isShowing) {
-            isShowing = false;
-            isShowContent = false;
-            content.removeView(progress);
-        }
-    }
-
-    private void showProgressDialog() {
-        isShowContent = false;
-        if (!progressDialog.isShowing()) {
-            progressDialog.show();
-        }
-    }
-
-    private void removeProgressDialog() {
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
-
-    // ====================== API回调方法 =======================
-
+    /**
+     * 显示全屏/局部加载条，已自动处理逻辑
+     */
     public void showProgress() {
-        if (showContent) showProgressContent();
-        else showProgressDialog();
+        getContext().showProgress();
     }
 
-    public void removeProgress() {
-        removeProgressContent();
-        removeProgressDialog();
-    }
-
-    public void onException(String request, Throwable ex) {
-        if (isShowContent) {
-            int index = content.indexOfChild(error);
-            if (index < 0) content.addView(error);
-        } else {
-            if (ex instanceof SocketException || ex instanceof InterruptedIOException || ex instanceof UnknownHostException || ex instanceof UnknownServiceException) {
-                showToast(getString(R.string.network_anomaly));
-            } else {
-                showToast(getString(R.string.server_unknow_error));
-            }
-        }
-        ex.printStackTrace();
-        // 处理错误日志
-        try {
-            if (CrashConfig.isAllowReportToHost()) {
-                CrashLogStore.saveLogToFile(application, request, ex, Thread.currentThread());
-                CrashLogSender cls = new CrashLogSender(application);
-                cls.start();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        removeProgress();
+    /**
+     * 移除全屏/局部加载条
+     */
+    public void removeProgress(Object tag) {
+        getContext().removeProgress(tag);
     }
 }

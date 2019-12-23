@@ -16,7 +16,7 @@ public interface BaseView {
     /**
      * 隐藏加载条
      */
-    void removeProgress();
+    void removeProgress(Object tag);
 
     /**
      * 显示Toast提示

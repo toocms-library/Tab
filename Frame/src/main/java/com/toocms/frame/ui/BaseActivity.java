@@ -8,17 +8,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.ArrayRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -38,7 +27,18 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import androidx.annotation.ArrayRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.lzy.okgo.OkGo;
 import com.toocms.frame.config.Constants;
 import com.toocms.frame.config.IAppConfig;
@@ -48,7 +48,6 @@ import com.toocms.frame.crash.CrashLogSender;
 import com.toocms.frame.crash.CrashLogStore;
 import com.toocms.frame.fragment.FragmentParam;
 import com.toocms.frame.fragment.FragmentParam.TYPE;
-import com.toocms.frame.image.ImageLoader;
 import com.toocms.frame.tool.AppManager;
 import com.toocms.frame.tool.SystemBarTintManager;
 import com.toocms.frame.ui.imageselector.SelectImageAty;
@@ -56,6 +55,7 @@ import com.toocms.frame.view.PromptInfo;
 import com.toocms.frame.view.progress.ProgressDialog;
 import com.umeng.analytics.MobclickAgent;
 
+import org.xutils.common.util.LogUtil;
 import org.xutils.x;
 
 import java.io.InterruptedIOException;
@@ -70,7 +70,7 @@ import cn.zero.android.common.permission.PermissionGen;
 import cn.zero.android.common.util.ListUtils;
 import cn.zero.android.common.view.TooCMSToolbar;
 import cn.zero.android.common.view.ucrop.model.CropType;
-import okhttp3.Call;
+import okhttp3.Request;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -111,16 +111,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
     private TextView mTitle;
 
     /**
-     * Toolbar下方的内容显示区域，子类中指定的布局会被add到这里
-     */
-    private FrameLayout content;
-
-    /**
-     * 错误信息提示View，当网络请求回调中的代码出现Crash时该View会以覆盖的方式显示在{@link #content}的最上层，子类无需调用
-     */
-    private View error;
-
-    /**
      * 自定义标题栏，子类无需调用
      */
     private FrameLayout titlebar;
@@ -131,9 +121,19 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
     private View divider;
 
     /**
+     * Toolbar下方的内容显示区域，子类中指定的布局会被add到这里
+     */
+    private FrameLayout content;
+
+    /**
      * 全屏加载条控件，子类无需调用
      */
     private View progress;
+
+    /**
+     * 错误信息提示View，当网络请求回调中的代码出现Crash时该View会以覆盖的方式显示在{@link #content}的最上层，子类无需调用
+     */
+    private View error;
 
     /**
      * 中间加载条控件，子类无需调用
@@ -171,12 +171,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
     protected boolean hasAnimiation = true;
 
     /**
-     * 当网络请求回调中的代码出现Crash时标识是否显示{@link #error}，逻辑为如果出现Crash时加载条显示的是全屏加载条{@link #progress}的话，
-     * 就会显示{@link #error}，否则以Toast方式提示，子类无需调用
-     */
-    private boolean isShowContent;
-
-    /**
      * 上一个页面的类名，也就是从哪个类中跳转到该页面的
      */
     private String from; // 上一个页面
@@ -212,7 +206,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         super.onCreate(savedInstanceState);
         initSystemBarTint();
         // 管理Activity
-        AppManager.instance = this;
         AppManager.getInstance().addActivity(this);
         // 竖屏锁定
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -237,7 +230,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         preliminary();
         onCreateActivity(savedInstanceState);
         // 请求数据
-        showContent = true;
+        resetShowContent();
         requestData();
     }
 
@@ -262,6 +255,12 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         super.onDestroy();
     }
 
+    @Override
+    protected void onRestart() {
+        AppManager.getInstance().removeTopFinshedActivity();
+        super.onRestart();
+    }
+
     /**
      * Activity的onResume生命周期<br/>
      * 其中实现：<br/>
@@ -273,7 +272,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
     @Override
     protected void onResume() {
         super.onResume();
-        AppManager.instance = this;
         // 设置分割线显示
         if (getTitlebarResId() != 0 || mActionBar.isShowing())
             divider.setVisibility(VISIBLE);
@@ -281,9 +279,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         MobclickAgent.onPageStart(this.getClass().getSimpleName());
         // 统计时长
         MobclickAgent.onResume(this);
-        showContent = true;
-        if (null != handler)
-            handler.postDelayed(runnable, 300);
+        resetShowContent();
     }
 
     /**
@@ -323,16 +319,19 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         titlebar = findViewById(R.id.aty_titlebar);
         content = findViewById(R.id.content);
         divider = findViewById(R.id.content_divider);
-        progress = View.inflate(this, R.layout.loading_content, null);
+        progress = findViewById(R.id.loading);
         progress.setOnClickListener(null);
-        error = View.inflate(this, R.layout.layout_error, null);
-        error.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
+        error = findViewById(R.id.error);
+        error.setOnClickListener(v -> {
+            resetShowContent();
+            if (null == currentFragment) {     // 只有aty
+                if (isLayerShowing(error)) error.setVisibility(GONE);
                 requestData();
                 onResume();
-                content.removeView(error);
+            } else {    // 包含fgt
+                currentFragment.error.setVisibility(GONE);
+                currentFragment.requestData();
+                currentFragment.onResume();
             }
         });
         progressDialog = new ProgressDialog(this);
@@ -374,10 +373,9 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      * 向用户展示信息前的准备工作在这个方法里处理<br/>
      * 其中包括：<br/>
      * 1、{@link #application}的初始化<br/>
-     * 2、{@link #glide}的初始化<br/>
-     * 3、{@link #from}的初始化<br/>
-     * 4、{@link #initialized()}方法的调用<br/>
-     * 5、{@link #presenter}的初始化以及与View层的关联<br/>
+     * 2、{@link #from}的初始化<br/>
+     * 3、{@link #initialized()}方法的调用<br/>
+     * 4、{@link #presenter}的初始化以及与View层的关联<br/>
      */
     private void preliminary() {
         application = (WeApplication) getApplication();
@@ -773,19 +771,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         return null;
     }
 
-    /**
-     * 系统接收结果的回调方法，实现了当返回该页面时OKGO的Context参数为该页面，否则会出现加载条不消失的问题
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        AppManager.instance = this;
-    }
-
     // ================================ 启动Fragment =============================
 
     /**
@@ -853,7 +838,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
     /**
      * 跳转到堆栈中最顶部的Fragment
      *
-     * @param cls  Fragment的类名
      * @param data 要传输的数据
      */
     public void popTopFragment(Object data) {
@@ -890,6 +874,10 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         return sb.toString();
     }
 
+    public BaseFragment getCurrentFragment() {
+        return currentFragment;
+    }
+
     /**
      * Fragment加到Activity中的处理方法<br/>
      * 处理步骤（这里会有两个概念1、即将跳转的Fragment &nbsp&nbsp&nbsp  2、当前正在显示的Fragment）：<br/>
@@ -918,6 +906,8 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         try {
             String fragmentTag = getFragmentTag(param);
             BaseFragment fragment = (BaseFragment) getSupportFragmentManager().findFragmentByTag(fragmentTag);
+            // 当fragment重新显示时重置showContent
+            resetShowContent();
             if (fragment == null) {
                 fragment = (BaseFragment) cls.newInstance();
             }
@@ -952,7 +942,6 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
                 ft.addToBackStack(fragmentTag);
             }
             ft.commitAllowingStateLoss();
-
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -1047,25 +1036,21 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      * @param text 提示文本
      */
     public void showToast(CharSequence text) {
-        PromptInfo.getInstance().showToast(this, text);
+        PromptInfo.getInstance().showToast(null == currentFragment ? content : currentFragment.getContent(), text);
     }
 
     /**
      * 以{@link Toast}/{@link Snackbar}的形式弹出提示信息<br/>
      * 通过设置{@link IAppConfig#isUseSnackBar()}回调方法来决定以哪种方式弹出
      *
-     * @param text 提示文本的ID
+     * @param resId 提示文本的ID
      */
     public void showToast(@StringRes int resId) {
-        PromptInfo.getInstance().showToast(this, resId);
+        PromptInfo.getInstance().showToast(null == currentFragment ? content : currentFragment.getContent(), resId);
     }
 
     // ====================== 加载条 ==========================
 
-    /**
-     * 全屏加载条是否显示的变量
-     */
-    private boolean isShowing = false;
     /**
      * 是否显示全屏加载条的标识
      */
@@ -1086,33 +1071,50 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      */
     private Handler handler = new Handler();
 
+    protected void resetShowContent() {
+        showContent = true;
+        if (null != handler) handler.postDelayed(runnable, 500);
+    }
+
+    /**
+     * 用于判断progress/error层是否为显示状态
+     *
+     * @param layer
+     * @return
+     */
+    private boolean isLayerShowing(@NonNull View layer) {
+        return layer.getVisibility() == VISIBLE;
+    }
+
     /**
      * 显示全屏加载条
      */
     private void showProgressContent() {
-        if (isShowing) return;
-        isShowContent = true;
-        isShowing = true;
-        content.addView(progress);
+        if (null == currentFragment) {     // 只有aty
+            if (!isLayerShowing(progress))
+                progress.setVisibility(VISIBLE);
+        } else {    // 包含fgt
+            if (!isLayerShowing(currentFragment.progress))
+                currentFragment.progress.setVisibility(VISIBLE);
+        }
     }
-
 
     /**
      * 移除全屏加载条
      */
-    private void removeProgressContent() {
-        if (isShowing) {
-            isShowing = false;
-            isShowContent = false;
-            content.removeView(progress);
+    private void removeProgressContent(Object tag) {
+        if (tag instanceof BaseActivity) {
+            ((BaseActivity) tag).progress.setVisibility(GONE);
+        } else if (tag instanceof BaseFragment) {
+            if (isLayerShowing(((BaseFragment) tag).progress))
+                ((BaseFragment) tag).progress.setVisibility(GONE);
         }
     }
 
     /**
      * 显示局部加载条
      */
-    void showProgressDialog() {
-        isShowContent = false;
+    private void showProgressDialog() {
         if (!progressDialog.isShowing()) {
             progressDialog.show();
         }
@@ -1121,13 +1123,11 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
     /**
      * 移除局部加载条
      */
-    void removeProgressDialog() {
+    private void removeProgressDialog() {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
-
-    // ====================== API回调方法 =======================
 
     /**
      * 显示全屏/局部加载条，已自动处理逻辑
@@ -1140,10 +1140,12 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
     /**
      * 移除全屏/局部加载条
      */
-    public void removeProgress() {
-        removeProgressContent();
+    public void removeProgress(Object tag) {
+        removeProgressContent(tag);
         removeProgressDialog();
     }
+
+    // ====================== API回调方法 =======================
 
     /**
      * 网络请求回调方法中处理Crash的方法<br/>
@@ -1155,10 +1157,14 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      *
      * @param ex
      */
-    public void onException(String request, Throwable ex) {
-        if (isShowContent) {
-            int index = content.indexOfChild(error);
-            if (index < 0) content.addView(error);
+    public void onException(Request request, Throwable ex) {
+        Object tag = request.tag();
+        if (tag instanceof BaseActivity && isLayerShowing(((BaseActivity) tag).progress)) {
+            if (!isLayerShowing(error))
+                error.setVisibility(VISIBLE);
+        } else if (tag instanceof BaseFragment && isLayerShowing(((BaseFragment) tag).progress)) {
+            if (!isLayerShowing(((BaseFragment) tag).error))
+                ((BaseFragment) tag).error.setVisibility(VISIBLE);
         } else {
             if (ex instanceof SocketException || ex instanceof InterruptedIOException || ex instanceof UnknownHostException || ex instanceof UnknownServiceException) {
                 showToast(getString(R.string.network_anomaly));
@@ -1170,13 +1176,13 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         // 处理错误日志
         try {
             if (CrashConfig.isAllowReportToHost()) {
-                CrashLogStore.saveLogToFile(application, request, ex, Thread.currentThread());
+                CrashLogStore.saveLogToFile(application, request.toString(), ex);
                 CrashLogSender cls = new CrashLogSender(application);
                 cls.start();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        removeProgress();
+        removeProgress(tag);
     }
 }

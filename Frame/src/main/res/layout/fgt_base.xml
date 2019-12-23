@@ -18,7 +18,22 @@
         android:visibility="gone" />
 
     <FrameLayout
-        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <include
+            android:id="@+id/loading"
+            layout="@layout/loading_content"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/error"
+            layout="@layout/layout_error"
+            android:visibility="gone" />
+    </FrameLayout>
 </LinearLayout>
