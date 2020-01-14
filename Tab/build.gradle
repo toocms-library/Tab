@@ -1,0 +1,118 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.kezong.fat-aar'
+apply plugin: 'maven'
+
+android {
+    compileSdkVersion configs.compileSdkVersion
+    buildToolsVersion configs.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion configs.minSdkVersion
+        targetSdkVersion configs.targetSdkVersion
+        versionCode configs.versionCode
+        versionName configs.versionName
+//        multiDexEnabled = true
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        encoding "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+configurations.embed.transitive = true
+
+dependencies {
+    embed project(path: ':Control', configuration: 'default')
+    embed project(path: ':ImageLoader', configuration: 'default')
+    embed project(path: ':Network', configuration: 'default')
+    embed project(path: ':PictureSelector', configuration: 'default')
+    embed project(path: ':ToolKit', configuration: 'default')
+    compileOnly "androidx.appcompat:appcompat:${configs.version_appcompat}"
+    compileOnly "com.google.android.material:material:${configs.version_material}"
+    // 图片加载
+    compileOnly "com.github.bumptech.glide:glide:${configs.version_glide}"
+    annotationProcessor "com.github.bumptech.glide:compiler:${configs.version_glide}"
+    compileOnly "com.github.bumptech.glide:okhttp3-integration:${configs.version_glide}"
+    // 网络请求
+    compileOnly "com.lzy.net:okgo:${configs.version_okgo}"
+    //    compileOnly 'com.lzy.net:okserver:+'
+    // 适配
+    compileOnly 'me.jessyan:autosize:latest.integration'
+    // json解析
+    compileOnly "com.google.code.gson:gson:${configs.version_gson}"
+    // 注入
+    compileOnly "com.jakewharton:butterknife:${configs.version_butterknife}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${configs.version_butterknife}"
+    //    // 友盟
+    compileOnly 'com.umeng.sdk:common:latest.integration'
+    compileOnly 'com.umeng.sdk:analytics:latest.integration'
+    //    compileOnly 'com.android.support:multidex:+'
+}
+
+//// 打包发布配置
+//def MAVEN_RELEASE_LOCAL_PATH = 'https://repo.rdc.aliyun.com/repository/118418-release-76HGjp'
+//def MAVEN_SNAPSHOT_LOCAL_PATH = 'https://repo.rdc.aliyun.com/repository/118418-snapshot-J5kUCN'
+////版本号
+//def VERSION = '5.0.0'
+////公司名称
+//def GROUP_ID = 'com.toocms'
+////aar包名称
+//def ARTIFACT_ID = 'tab'
+////Maven私服账号
+//def ACCOUNT = 'jnBVKn'
+////Maven私服密码
+//def PWD = 'VJscC25Caw'
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            pom.groupId = GROUP_ID
+//            pom.artifactId = ARTIFACT_ID
+//            pom.version = VERSION
+//            pom.packaging = 'aar'
+//            repository(url: MAVEN_RELEASE_LOCAL_PATH) {
+//                //maven私服账号密码
+//                authentication(userName: ACCOUNT, password: PWD)
+//            }
+//            snapshotRepository(url: MAVEN_SNAPSHOT_LOCAL_PATH) {
+//                authentication(userName: ACCOUNT, password: PWD)
+//            }
+//        }
+//    }
+//}
+
+//生成文档注释
+task androidJavadocs(type: Javadoc) {
+    failOnError = false
+    source = android.sourceSets.main.java.srcDirs
+    ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+    classpath += files(ext.androidJar)
+}
+//将文档打包成jar
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+// 源代码一起打包
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+//包含文档和源码的aar
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
+}

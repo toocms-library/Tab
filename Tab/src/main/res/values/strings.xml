@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name" translatable="false">TooCMSAndroidFrame</string>
+
+    <string name="error_refresh">出错了，请点击刷新</string>
+    <string name="network_anomaly">网络错误，请再试一次</string>
+    <string name="server_unknow_error">系统出现异常，请提交反馈以帮助我们快速解决问题</string>
+
+    <string name="crash_message">系统出现异常，正在收集错误日志，请稍后...</string>
+</resources>

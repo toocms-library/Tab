@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#ffffff</color>
+    <color name="gray">#E7E7E7</color>
+    <color name="red">#ff0000</color>
+    <color name="blue">#0079FF</color>
+    <color name="black">#000000</color>
+
+    <color name="divider">#E3E3E3</color>
+
+    <!-- fbutton -->
+    <color name="fbutton_default_color">#3eadeb</color>
+    <color name="fbutton_default_shadow_color">#ff3493c8</color>
+
+    <!-- Toasty -->
+    <color name="defaultTextColor">#FFFFFF</color>
+    <color name="errorColor">#D50000</color>
+    <color name="infoColor">#3F51B5</color>
+    <color name="successColor">#388E3C</color>
+    <color name="warningColor">#FFA900</color>
+    <color name="normalColor">#353A3E</color>
+
+    <!-- APP标题文字颜色 -->
+    <color name="app_title_color">#060606</color>
+    <!-- APP副标题文字颜色 -->
+    <color name="app_subtitle_color">#868686</color>
+
+    <!--APP主色调-->
+    <color name="clr_main">#F69537</color>
+    <color name="clr_progress">@color/clr_main</color>
+</resources>

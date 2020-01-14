@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black10">#19000000</color>
+
+    <!--标题栏-->
+    <color name="action_bg">#21282C</color>
+    <color name="action_title_color">@color/white</color>
+    <color name="action_menu_color">@color/white</color>
+
+</resources>

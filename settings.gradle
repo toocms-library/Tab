@@ -1,1 +1,1 @@
-include ':Frame'
+include ':Tab', ':PictureSelector', ':ToolKit', ':Control', ':Network', ':ImageLoader'

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="toast_message">Toast message</string>
+
+    <string name="str_pay_text">Please enter the payment password</string>
+
+    <string name="update_catch">Version Parsing Exception</string>
+    <string name="update_newest">It\'s The Latest Version</string>
+    <string name="update_has_new">New Version</string>
+    <string name="update_later">Later</string>
+    <string name="update_now_update">Update</string>
+    <string name="update_now_install">Install</string>
+    <string name="update_content">Update Content：</string>
+    <string name="update_downloading">Downloading...</string>
+    <string name="update_fail">Failed To Get Permission, Unable To Update</string>
+</resources>

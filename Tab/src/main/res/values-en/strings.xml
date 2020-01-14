@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="error_refresh">Error, Please Click Refresh</string>
+    <string name="network_anomaly">Network Error, Please Try Again</string>
+    <string name="server_unknow_error">System Abnormal, Please Submit Feedback To Help Us Solve The Problem Quickly</string>
+
+    <string name="crash_message">The System Is Abnormal And The Error Log Is Being Collected. Please Later...</string>
+</resources>
