@@ -3,9 +3,6 @@ apply from: "config.gradle"
 
 buildscript {
     repositories {
-        maven {
-            url 'https://repo.rdc.aliyun.com/repository/118418-release-76HGjp'
-        }
         google()
         jcenter()
     }
@@ -19,11 +16,12 @@ buildscript {
 
 allprojects {
     repositories {
-        maven {
-            url 'https://repo.rdc.aliyun.com/repository/118418-release-76HGjp'
-        }
         google()
         jcenter()
+        maven {
+            url "https://jitpack.io"
+            credentials { username authToken }
+        }
     }
 }
 
