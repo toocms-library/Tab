@@ -61,3 +61,26 @@ dependencies {
     compileOnly 'com.umeng.sdk:analytics:latest.integration'
     //    compileOnly 'com.android.support:multidex:+'
 }
+
+//生成文档注释
+task androidJavadocs(type: Javadoc) {
+    failOnError = false
+    source = android.sourceSets.main.java.srcDirs
+    ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+    classpath += files(ext.androidJar)
+}
+//将文档打包成jar
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+// 源代码一起打包
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+//包含文档和源码的aar
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
+}
