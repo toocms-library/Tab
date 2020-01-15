@@ -28,9 +28,9 @@ android {
 }
 
 dependencies {
-    compileOnly project(path: ':ToolKit')
+    implementation project(path: ':ToolKit')
     // 图片加载
-    compileOnly "com.github.bumptech.glide:glide:${configs.version_glide}"
+    implementation "com.github.bumptech.glide:glide:${configs.version_glide}"
     annotationProcessor "com.github.bumptech.glide:compiler:${configs.version_glide}"
-    compileOnly "com.github.bumptech.glide:okhttp3-integration:${configs.version_glide}"
+    implementation "com.github.bumptech.glide:okhttp3-integration:${configs.version_glide}"
 }

@@ -28,10 +28,10 @@ android {
 }
 
 dependencies {
-    compileOnly project(path: ':ToolKit')
-    compileOnly project(path: ':Network')
-    compileOnly project(path: ':ImageLoader')
-    compileOnly "androidx.appcompat:appcompat:${configs.version_appcompat}"
-    compileOnly "com.google.android.material:material:${configs.version_material}"
-    compileOnly "com.lzy.net:okgo:${configs.version_okgo}"
+    implementation project(path: ':ToolKit')
+    implementation project(path: ':Network')
+    implementation project(path: ':ImageLoader')
+    implementation "androidx.appcompat:appcompat:${configs.version_appcompat}"
+    implementation "com.google.android.material:material:${configs.version_material}"
+    implementation "com.lzy.net:okgo:${configs.version_okgo}"
 }

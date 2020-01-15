@@ -27,8 +27,8 @@ android {
 }
 
 dependencies {
-    compileOnly "androidx.appcompat:appcompat:${configs.version_appcompat}"
-    compileOnly "com.lzy.net:okgo:${configs.version_okgo}"
-    compileOnly "com.github.bumptech.glide:glide:${configs.version_glide}"
-    compileOnly "com.google.code.gson:gson:${configs.version_gson}"
+    implementation "androidx.appcompat:appcompat:${configs.version_appcompat}"
+    implementation "com.lzy.net:okgo:${configs.version_okgo}"
+    implementation "com.github.bumptech.glide:glide:${configs.version_glide}"
+    implementation "com.google.code.gson:gson:${configs.version_gson}"
 }

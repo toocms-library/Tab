@@ -30,6 +30,6 @@ android {
 }
 
 dependencies {
-    compileOnly "androidx.appcompat:appcompat:${configs.version_appcompat}"
-    compileOnly "androidx.recyclerview:recyclerview:${configs.version_material}"
+    implementation "androidx.appcompat:appcompat:${configs.version_appcompat}"
+    implementation "androidx.recyclerview:recyclerview:${configs.version_material}"
 }
