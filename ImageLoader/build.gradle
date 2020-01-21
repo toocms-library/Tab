@@ -29,8 +29,8 @@ android {
 
 dependencies {
     implementation project(path: ':ToolKit')
-    // 图片加载
     implementation "com.github.bumptech.glide:glide:${configs.version_glide}"
     annotationProcessor "com.github.bumptech.glide:compiler:${configs.version_glide}"
     implementation "com.github.bumptech.glide:okhttp3-integration:${configs.version_glide}"
+    implementation "com.github.LuckSiege.PictureSelector:picture_library:${configs.version_pictureselector}"
 }
