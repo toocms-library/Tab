@@ -35,7 +35,6 @@ dependencies {
     implementation project(path: ':Control')
     implementation project(path: ':ImageLoader')
     implementation project(path: ':Network')
-    implementation project(path: ':PictureSelector')
     implementation project(path: ':ToolKit')
     implementation "androidx.appcompat:appcompat:${configs.version_appcompat}"
     implementation "com.google.android.material:material:${configs.version_material}"
@@ -45,7 +44,9 @@ dependencies {
     implementation "com.github.bumptech.glide:okhttp3-integration:${configs.version_glide}"
     // 网络请求
     implementation "com.lzy.net:okgo:${configs.version_okgo}"
-    //    compileOnly 'com.lzy.net:okserver:+'
+    //    implementation 'com.lzy.net:okserver:+'
+    // 图片/视频选择
+    implementation "com.github.LuckSiege.PictureSelector:picture_library:${configs.version_pictureselector}"
     // 适配
     implementation 'me.jessyan:autosize:latest.integration'
     // json解析
@@ -56,5 +57,5 @@ dependencies {
     //    // 友盟
     implementation 'com.umeng.sdk:common:latest.integration'
     implementation 'com.umeng.sdk:analytics:latest.integration'
-    //    compileOnly 'com.android.support:multidex:+'
+    //    implementation 'com.android.support:multidex:+'
 }
