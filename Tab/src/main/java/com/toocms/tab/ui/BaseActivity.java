@@ -38,6 +38,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
+import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.lzy.okgo.OkGo;
 import com.toocms.tab.R;
 import com.toocms.tab.WeApplication;
@@ -47,8 +53,11 @@ import com.toocms.tab.control.progress.ProgressDialog;
 import com.toocms.tab.crash.CrashConfig;
 import com.toocms.tab.crash.CrashLogSender;
 import com.toocms.tab.crash.CrashLogStore;
+import com.toocms.tab.imageloader.engine.GlideEngine;
 import com.toocms.tab.toolkit.AppManager;
+import com.toocms.tab.toolkit.FileManager;
 import com.toocms.tab.toolkit.ListUtils;
+import com.toocms.tab.toolkit.RandomUtils;
 import com.toocms.tab.toolkit.SystemBarTintManager;
 import com.toocms.tab.toolkit.configs.IAppConfig;
 import com.toocms.tab.toolkit.permission.PermissionGen;
@@ -99,7 +108,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
     /**
      * Toolbar中的标题
      * <p>
-     * 1、可调用{@link #setTitle(String)}更改标题<br/>
+     * 1、可调用{@link #setTitle(CharSequence)}更改标题<br/>
      * 2、可设置{@link IAppConfig#isShowTitleCenter()}回调来达到标题居中/居左的目的
      */
     private TextView mTitle;
@@ -138,6 +147,11 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      * 对话框构建器，子类无需调用
      */
     private AlertDialog.Builder builder;
+
+    /**
+     * 图片选择Aty的启动退出动画
+     */
+    private PictureWindowAnimationStyle pictureStyle;
 
     /**
      * {@link WeApplication}类的对象，子类中可通过该变量直接调用其中的方法
@@ -711,59 +725,141 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         }
     }
 
-//    /**
-//     * 启动多图选择页面，<a href="http://twp.toocms.com/index.php/Blog/details/id/57">使用方法</a>
-//     *
-//     * @param defaultDataArray 已有图片的路径集合
-//     * @param maxSelectCount   最大可选图片数量
-//     */
-//    public void startSelectMultiImageAty(ArrayList<String> defaultDataArray, int maxSelectCount) {
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(SelectImageAty.EXTRA_SELECT_COUNT, maxSelectCount);
-//        if (!ListUtils.isEmpty(defaultDataArray)) {
-//            bundle.putStringArrayList(SelectImageAty.EXTRA_DEFAULT_SELECTED_LIST, defaultDataArray);
-//        }
-//        startActivityForResult(SelectImageAty.class, bundle, Constants.SELECT_IMAGE);
-//    }
-//
-//    /**
-//     * 启动单图选择页面，<a href="http://twp.toocms.com/index.php/Blog/details/id/57">使用方法</a>
-//     *
-//     * @param ratio 纵横比例xy
-//     */
-//    public void startSelectSignImageAty(int... ratio) {
-//        startSelectSignImageAtyByCropType(CropType.TYPE_SQUARE, ratio);
-//    }
-//
-//    /**
-//     * 启动单图选择页面并指定裁剪方式
-//     *
-//     * @param cropType
-//     * @param ratio
-//     */
-//    public void startSelectSignImageAtyByCropType(int cropType, int... ratio) {
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(SelectImageAty.EXTRA_SELECT_MODE, SelectImageAty.MODE_SINGLE);
-//        bundle.putInt(SelectImageAty.EXTRA_CROP_TYPE, cropType);
-//        if (cropType == CropType.TYPE_SQUARE && ratio != null && ratio.length != 0) {
-//            bundle.putFloat(SelectImageAty.EXTRA_ASPECT_RATIO_X, ratio[0]);
-//            bundle.putFloat(SelectImageAty.EXTRA_ASPECT_RATIO_Y, ratio[1]);
-//        }
-//        startActivityForResult(SelectImageAty.class, bundle, Constants.SELECT_IMAGE);
-//    }
-//
-//    /**
-//     * 获取选择图片页面返回的图片路径集合<br/>
-//     * 在{@link #onActivityResult(int, int, Intent)}中调用，配合{@link #startSelectSignImageAty(int...)}/{@link #startSelectMultiImageAty(ArrayList, int)}使用
-//     *
-//     * @param data 传入{@link #onActivityResult(int, int, Intent)}中的Intent参数
-//     * @return 选择图片的本地路径集合
-//     */
-//    public ArrayList<String> getSelectImagePath(Intent data) {
-//        if (data != null)
-//            return data.getStringArrayListExtra(SelectImageAty.EXTRA_RESULT);
-//        return null;
-//    }
+    /**
+     * 启动单选图片页面
+     *
+     * @param listener 获取数据回调
+     * @param ratio    裁剪比例x,y
+     */
+    public void startSelectSignImageAty(OnResultCallbackListener listener, int... ratio) {
+        int aspect_ratio_x = 1, aspect_ratio_y = 1;
+        if (ratio != null && ratio.length != 0) {
+            aspect_ratio_x = ratio[0];
+            aspect_ratio_y = ratio[1];
+        }
+        startSelectSignAty(PictureMimeType.ofImage(), aspect_ratio_x, aspect_ratio_y, 120, 120, listener);
+    }
+
+    /**
+     * 启动单选视频页面
+     *
+     * @param listener 获取数据回调
+     */
+    public void startSelectSignVideoAty(OnResultCallbackListener listener) {
+        startSelectSignAty(PictureMimeType.ofVideo(), 1, 1, 120, 120, listener);
+    }
+
+    /**
+     * 启动单选图片&视频&音频页面
+     *
+     * @param listener 获取数据回调
+     */
+    public void startSelectSignAllAty(OnResultCallbackListener listener) {
+        startSelectSignAty(PictureMimeType.ofAll(), 1, 1, 120, 120, listener);
+    }
+
+    /**
+     * 启动单选页面
+     *
+     * @param chooseMode        扫描文件类型  {@link PictureMimeType#ofAll()}、{@link PictureMimeType#ofImage()}、{@link PictureMimeType#ofVideo()}
+     * @param aspect_ratio_x    裁剪比例X
+     * @param aspect_ratio_y    裁剪比例Y
+     * @param videoMaxSecond    显示多少秒以内的视频，不限制-0，>0即生效
+     * @param recordVideoSecond 视频录制秒数
+     * @param listener          获取数据回调
+     */
+    public void startSelectSignAty(int chooseMode, int aspect_ratio_x, int aspect_ratio_y, int videoMaxSecond, int recordVideoSecond, OnResultCallbackListener listener) {
+        if (pictureStyle == null) {
+            pictureStyle = new PictureWindowAnimationStyle();
+            pictureStyle.ofAllAnimation(R.anim.slide_right_in, R.anim.slide_right_out);
+        }
+        PictureSelector.create(this)
+                .openGallery(chooseMode)    // 扫描文件类型
+                .setPictureWindowAnimationStyle(pictureStyle) // 相册启动退出动画
+                .loadImageEngine(GlideEngine.createGlideEngine())   // 图片加载引擎
+                .isWithVideoImage(true) // 图片和视频是否可以同选,只在ofAll模式下有效
+                .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)  // 相册Activity方向
+                .isOriginalImageControl(false)  // 不显示原图控制按钮
+                .compressSavePath(FileManager.getCachePath())   //  压缩图片保存地址
+                .renameCompressFile(System.currentTimeMillis() + RandomUtils.getRandom(1000, 9999) + ".0")    // 重命名压缩文件名
+                .renameCropFileName(System.currentTimeMillis() + ".0")    // 重命名裁剪文件名
+                .selectionMode(PictureConfig.SINGLE)    // 单选
+                .isSingleDirectReturn(true) // 裁剪之后直接返回
+                .enableCrop(true)   // 裁剪
+                .compress(true) // 压缩
+                .withAspectRatio(aspect_ratio_x, aspect_ratio_y)    // 裁剪比例
+                .previewEggs(true)  // 预览图片时增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                .videoMaxSecond(videoMaxSecond) // 显示多少秒以内的视频or音频
+                .recordVideoSecond(recordVideoSecond)  //  视频录制秒数
+                .forResult(listener);   // 回调
+    }
+
+    /**
+     * 启动多选图片页面
+     *
+     * @param selectionMedia 已选数据
+     * @param maxSelectNum   最大选择数量
+     * @param listener       获取数据回调
+     */
+    public void startSelectMultipleImageAty(List<LocalMedia> selectionMedia, int maxSelectNum, OnResultCallbackListener listener) {
+        startSelectMultipleAty(PictureMimeType.ofImage(), selectionMedia, maxSelectNum, 120, 120, listener);
+    }
+
+    /**
+     * 启动多选视频页面
+     *
+     * @param selectionMedia 已选数据
+     * @param maxSelectNum   最大选择数量
+     * @param listener       获取数据回调
+     */
+    public void startSelectMultipleVideoAty(List<LocalMedia> selectionMedia, int maxSelectNum, OnResultCallbackListener listener) {
+        startSelectMultipleAty(PictureMimeType.ofVideo(), selectionMedia, maxSelectNum, 120, 120, listener);
+    }
+
+    /**
+     * 启动多选图片&视频&音频页面
+     *
+     * @param selectionMedia 已选数据
+     * @param maxSelectNum   最大选择数量
+     * @param listener       获取数据回调
+     */
+    public void startSelectMultipleAllAty(List<LocalMedia> selectionMedia, int maxSelectNum, OnResultCallbackListener listener) {
+        startSelectMultipleAty(PictureMimeType.ofAll(), selectionMedia, maxSelectNum, 120, 120, listener);
+    }
+
+    /**
+     * 启动多选页面
+     *
+     * @param chooseMode        扫描文件类型  {@link PictureMimeType#ofAll()}、{@link PictureMimeType#ofImage()}、{@link PictureMimeType#ofVideo()}
+     * @param selectionMedia    已选数据
+     * @param maxSelectNum      最大选择数量
+     * @param videoMaxSecond    显示多少秒以内的视频，不限制-0，>0即生效
+     * @param recordVideoSecond 视频录制秒数
+     * @param listener          获取数据回调
+     */
+    public void startSelectMultipleAty(int chooseMode, List<LocalMedia> selectionMedia, int maxSelectNum, int videoMaxSecond, int recordVideoSecond, OnResultCallbackListener listener) {
+        if (pictureStyle == null) {
+            pictureStyle = new PictureWindowAnimationStyle();
+            pictureStyle.ofAllAnimation(R.anim.slide_right_in, R.anim.slide_right_out);
+        }
+        PictureSelector.create(this)
+                .openGallery(chooseMode)    // 扫描文件类型
+                .setPictureWindowAnimationStyle(pictureStyle) // 相册启动退出动画
+                .loadImageEngine(GlideEngine.createGlideEngine())   // 图片加载引擎
+                .isWithVideoImage(true) // 图片和视频可以同时选则
+                .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)  // 相册Activity方向
+                .isOriginalImageControl(false)  // 不显示原图控制按钮
+                .maxSelectNum(maxSelectNum) // 最大选择数量
+                .compressSavePath(FileManager.getCachePath())   //  压缩图片保存地址
+                .renameCompressFile(System.currentTimeMillis() + RandomUtils.getRandom(1000, 9999) + ".0")    // 重命名压缩文件名
+                .selectionMode(PictureConfig.MULTIPLE)    // 多选
+                .compress(true) // 压缩
+                .selectionMedia(selectionMedia) //  传入已选数据
+                .previewEggs(true)  // 预览图片时增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                .videoMaxSecond(videoMaxSecond) // 显示多少秒以内的视频or音频
+                .recordVideoSecond(recordVideoSecond)  //  视频录制秒数
+                .forResult(listener);   // 回调
+    }
 
     // ================================ 启动Fragment =============================
 
