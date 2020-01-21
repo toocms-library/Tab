@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/Control/Control.iml" filepath="$PROJECT_DIR$/Control/Control.iml" />
       <module fileurl="file://$PROJECT_DIR$/ImageLoader/ImageLoader.iml" filepath="$PROJECT_DIR$/ImageLoader/ImageLoader.iml" />
       <module fileurl="file://$PROJECT_DIR$/Network/Network.iml" filepath="$PROJECT_DIR$/Network/Network.iml" />
-      <module fileurl="file://$PROJECT_DIR$/PictureSelector/PictureSelector.iml" filepath="$PROJECT_DIR$/PictureSelector/PictureSelector.iml" />
       <module fileurl="file://$PROJECT_DIR$/Tab/Tab-Tab.iml" filepath="$PROJECT_DIR$/Tab/Tab-Tab.iml" />
       <module fileurl="file://$PROJECT_DIR$/ToolKit/ToolKit.iml" filepath="$PROJECT_DIR$/ToolKit/ToolKit.iml" />
       <module fileurl="file://$PROJECT_DIR$/Zero-Tab.iml" filepath="$PROJECT_DIR$/Zero-Tab.iml" />
