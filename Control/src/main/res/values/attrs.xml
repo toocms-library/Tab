@@ -86,9 +86,18 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="AddImageGridView">
-        <attr name="horizontal_size" format="dimension" />
-        <attr name="vertical_size" format="dimension" />
+    <declare-styleable name="PictureAdderView">
+        <attr name="spacing" format="dimension" />
+        <attr name="numColumns" format="dimension" />
+        <attr name="maxSelectNum" format="dimension" />
+        <attr name="videoMaxSecond" format="dimension" />
+        <attr name="recordVideoSecond" format="dimension" />
+        <attr name="chooseMode">
+            <flag name="all" value="0" />
+            <flag name="image" value="1" />
+            <flag name="video" value="2" />
+            <flag name="audio" value="3" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="ExpandableTextView">
