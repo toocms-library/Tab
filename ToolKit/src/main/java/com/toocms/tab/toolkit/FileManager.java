@@ -24,12 +24,30 @@ public class FileManager {
     }
 
     /**
+     * 获取图片文件临时存储路径
+     *
+     * @return String
+     */
+    public static String getImageFilePath() {
+        return getDirectoryPath(getRootFilePath(Environment.DIRECTORY_PICTURES));
+    }
+
+    /**
      * 获取音频文件临时存储路径
      *
      * @return String
      */
-    public static String getVoiceFilePath() {
-        return getDirectoryPath(getRootFilePath("voice"));
+    public static String getAudioFilePath() {
+        return getDirectoryPath(getRootFilePath(Environment.DIRECTORY_MUSIC));
+    }
+
+    /**
+     * 获取视频文件临时存储路径
+     *
+     * @return String
+     */
+    public static String getVideoFilePath() {
+        return getDirectoryPath(getRootFilePath(Environment.DIRECTORY_MOVIES));
     }
 
     /**
@@ -95,7 +113,53 @@ public class FileManager {
      * 清除手机中的缓存
      */
     public static void clearCacheFiles() {
-        Glide.get(x.app()).clearDiskCache();
+        File dirCache = getRootCachePath();
+        if (dirCache != null) {
+            File[] files = dirCache.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+
+        File dirPictures = getRootFilePath(Environment.DIRECTORY_PICTURES);
+        if (dirPictures != null) {
+            File[] files = dirPictures.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+
+        File dirMovies = getRootFilePath(Environment.DIRECTORY_MOVIES);
+        if (dirMovies != null) {
+            File[] files = dirMovies.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+
+        File dirMusic = getRootFilePath(Environment.DIRECTORY_MUSIC);
+        if (dirMusic != null) {
+            File[] files = dirMusic.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
     }
 
 }
