@@ -115,7 +115,7 @@ public abstract class ApiListener<T> extends AbsCallback<T> {
     public void onError(String error, Call call, Response response) {
         try {
             AppCompatActivity activity = AppManager.getInstance().getTopActivity();
-            ClassUtils.invoke(activity, "showErrorToast", new Class[]{CharSequence.class}, new Object[]{error});
+            ClassUtils.invoke(activity, "showErrorToast", new Class[]{String.class}, new Object[]{error});
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package com.toocms.tab.control.pictureadder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.TypedArray;
@@ -16,6 +17,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.toocms.tab.control.R;
 import com.toocms.tab.imageloader.engine.GlideEngine;
@@ -75,6 +77,7 @@ public class PictureAdderView extends RecyclerView implements PictureAdderAdapte
         setAdapter(adapter);
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     public void onAddPictureClick() {
         PictureSelector.create(AppManager.getInstance().getTopActivity())
@@ -93,13 +96,22 @@ public class PictureAdderView extends RecyclerView implements PictureAdderAdapte
                 .previewEggs(true)  // 预览图片时增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                 .videoMaxSecond(videoMaxSecond) // 显示多少秒以内的视频or音频
                 .recordVideoSecond(recordVideoSecond)  //  视频录制秒数
-                .forResult(result -> {
-                    selectList = result;
-                    adapter.setList(selectList);
-                    adapter.notifyDataSetChanged();
+                .forResult(new OnResultCallbackListener() {
+                    @Override
+                    public void onResult(List result) {
+                        selectList = result;
+                        adapter.setList(selectList);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
                 });   // 回调
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     public void onItemClick(int position, View v) {
         if (selectList.size() > 0) {

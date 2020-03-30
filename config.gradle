@@ -10,10 +10,10 @@ ext {
             //open version control
             version_appcompat      : "1.0.0",
             version_material       : "1.0.0",
-            version_glide          : "4.10.0",
+            version_glide          : "4.11.0",
             version_okgo           : "3.0.4",
             version_gson           : "2.8.2",
             version_butterknife    : "10.2.0",
-            version_pictureselector: "v2.4.6"
+            version_pictureselector: "v2.5.1"
     ]
 }

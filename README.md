@@ -101,14 +101,6 @@ dependencies {
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="true" />
-
-        <!-- 选取图片页面，按需、固定 -->
-        <activity android:name="tab.ui.imageselector.SelectImageAty" />
-
-        <!-- 裁剪图片页面，按需、固定 -->
-        <activity
-            android:name="cn.zero.android.common.view.ucrop.UCropActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 </manifest>
 ```
