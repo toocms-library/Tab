@@ -2,6 +2,7 @@ package com.toocms.tab;
 
 import android.app.Application;
 import android.service.autofill.Dataset;
+import android.widget.Toast;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -12,11 +13,17 @@ import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.HttpParams;
 import com.toocms.tab.control.Toasty;
+import com.toocms.tab.control.update.XUpdate;
+import com.toocms.tab.control.update.entity.UpdateError;
+import com.toocms.tab.control.update.listener.OnUpdateFailureListener;
+import com.toocms.tab.control.update.service.OkGoUpdateHttpService;
+import com.toocms.tab.control.update.utils.UpdateUtils;
 import com.toocms.tab.crash.CrashConfig;
 import com.toocms.tab.crash.CrashReport;
 import com.toocms.tab.crash.VerificationService;
 import com.toocms.tab.toolkit.AppManager;
 import com.toocms.tab.toolkit.DigestUtils;
+import com.toocms.tab.toolkit.FileManager;
 import com.toocms.tab.toolkit.GSONUtils;
 import com.toocms.tab.toolkit.PreferencesUtils;
 import com.toocms.tab.toolkit.StringUtils;
@@ -31,6 +38,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import okhttp3.OkHttpClient;
+
+import static com.toocms.tab.control.update.entity.UpdateError.ERROR.CHECK_NO_NEW_VERSION;
 
 /**
  * Application类初始化配置
@@ -97,6 +106,7 @@ public class WeApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        initUpdate();
         // 初始化第三方Jar包
         x.dataSet().getAppConfig().initJarForWeApplication(this);
         // 验证可用性
@@ -155,6 +165,26 @@ public class WeApplication extends Application {
                 .setRetryCount(3)                                                               // 3次重连
                 .addCommonHeaders(headers)                                              // 添加全局请求头部
                 .addCommonParams(params);                                                // 添加全局请求参数
+    }
+
+    private void initUpdate() {
+        XUpdate.get()
+                .debug(true)
+                .isWifiOnly(false)
+                .setApkCacheDir(FileManager.getDownloadPath())
+                .param("package", DigestUtils.md5(getPackageName()))
+                .param("version_code", UpdateUtils.getVersionCode(this))
+                .setOnUpdateFailureListener(new OnUpdateFailureListener() {
+                    @Override
+                    public void onFailure(UpdateError error) {
+                        if (error.getCode() != CHECK_NO_NEW_VERSION) {
+                            Toasty.error(WeApplication.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .supportSilentInstall(false)
+                .setIUpdateHttpService(new OkGoUpdateHttpService())
+                .init(this);
     }
 
     /**

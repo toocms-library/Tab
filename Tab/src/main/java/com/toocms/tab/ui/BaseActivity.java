@@ -1,5 +1,6 @@
 package com.toocms.tab.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -206,6 +207,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      *
      * @param savedInstanceState
      */
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -768,6 +770,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      * @param recordVideoSecond 视频录制秒数
      * @param listener          获取数据回调
      */
+    @SuppressLint("SourceLockedOrientationActivity")
     public void startSelectSignAty(int chooseMode, int aspect_ratio_x, int aspect_ratio_y, int videoMaxSecond, int recordVideoSecond, OnResultCallbackListener listener) {
         if (pictureStyle == null) {
             pictureStyle = new PictureWindowAnimationStyle();
@@ -837,6 +840,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
      * @param recordVideoSecond 视频录制秒数
      * @param listener          获取数据回调
      */
+    @SuppressLint("SourceLockedOrientationActivity")
     public void startSelectMultipleAty(int chooseMode, List<LocalMedia> selectionMedia, int maxSelectNum, int videoMaxSecond, int recordVideoSecond, OnResultCallbackListener listener) {
         if (pictureStyle == null) {
             pictureStyle = new PictureWindowAnimationStyle();
