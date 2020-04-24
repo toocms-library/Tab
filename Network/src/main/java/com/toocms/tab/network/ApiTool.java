@@ -98,7 +98,7 @@ public final class ApiTool<T> {
      */
     public static final void downloadApi(String url, HttpParams params, FileCallback fileCallback) {
         OkGo.<File>get(Toolkit.isUrl(url) ? url : x.dataSet().getUrls().getBaseUrl() + url)
-                .tag(AppManager.getInstance().getTopActivity())
+                .tag(url)
                 .params(params)
                 .execute(fileCallback);
     }
@@ -112,7 +112,7 @@ public final class ApiTool<T> {
      */
     public static final void upLoadApi(String url, HttpParams params, StringCallback stringCallback) {
         OkGo.<String>post(Toolkit.isUrl(url) ? url : x.dataSet().getUrls().getBaseUrl() + url)
-                .tag(AppManager.getInstance().getTopActivity())
+                .tag(url)
                 .params(params)
                 .execute(stringCallback);
     }
