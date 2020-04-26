@@ -1,5 +1,6 @@
 package com.toocms.tab.control.update;
 
+import com.toocms.tab.control.R;
 import com.toocms.tab.control.update.entity.CheckVersionResult;
 import com.toocms.tab.control.update.entity.UpdateEntity;
 import com.toocms.tab.control.update.listener.IUpdateParseCallback;
@@ -9,6 +10,8 @@ import com.toocms.tab.toolkit.GSONUtils;
 import com.toocms.tab.toolkit.x;
 
 /**
+ * App版本更新
+ * <p>
  * Author：Zero
  * Date：2020/4/17 21:20
  *
@@ -24,6 +27,8 @@ public class UpdateManager {
                 .updateUrl(x.dataSet().getUrls().getUpdateUrl())
                 .updateParser(new TooCMSUpdateParser())
                 .supportBackgroundUpdate(true)
+                .promptThemeColor(x.app().getResources().getColor(R.color.clr_main))
+                .promptTopResId(R.drawable.xupdate_icon_app_rocket)
                 .update();
     }
 

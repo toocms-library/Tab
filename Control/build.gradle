@@ -10,6 +10,7 @@ android {
         versionCode configs.versionCode
         versionName configs.versionName
 
+        vectorDrawables.useSupportLibrary = true
         consumerProguardFiles 'consumer-rules.pro'
     }
 

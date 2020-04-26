@@ -15,8 +15,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="137dp"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/xupdate_bg_app_top" />
 
