@@ -4,7 +4,7 @@
 
 # Tab框架集成文档
 
-[![Support](https://img.shields.io/badge/API-19+-4BC51D.svg)&#160;&#160;&#160;&#160;&#160;[![Tab Update](https://img.shields.io/badge/更新-记录-4BC51D.svg)](https://github.com/toocms-library/Tab/releases)&#160;&#160;&#160;&#160;&#160;![Author](https://img.shields.io/badge/Author-Zero-4BC51D.svg)
+![Support](https://img.shields.io/badge/API-19+-4BC51D.svg)&#160;&#160;&#160;&#160;&#160;[![Tab Update](https://img.shields.io/badge/更新-记录-4BC51D.svg)](https://github.com/toocms-library/Tab/releases)&#160;&#160;&#160;&#160;&#160;![Author](https://img.shields.io/badge/Author-Zero-4BC51D.svg)
 
 ## 添加Gradle依赖
 - 在项目根目录的build.gradle文件中的repositories添加
@@ -46,31 +46,30 @@ dependencies {
 }
 ```
 ## 集成方法
-- 创建必要类
-   * 包名下创建BaseAty抽象类，继承BaseActivity类，该类中可实现一些针对项目通用的方法，其他Activity类继承BaseAty类
-   * 包名下创建config包
-   * 在config包下新建AppConfig类，实现IAppConfig接口，并实现其方法
-   * 在config包下新建Urls类，实现IUrls接口，并实现其方法，此类为URL集合类，所有URL都需写在此类中以便管理
-   * 在config包下新建User类，实现IUser接口，此类为用户信息实体类，框架中通过该实体类存储和读取用户信息
-   * 在config包下新建DataSet类，继承BaseDataSet抽象类，把AppConfig、Urls、User当做元素传入，并实现其中抽象方法
-   * 以上所述可参考原型库中的写法以单例模式实现
-   * 按项目需要在colors.xml文件中加上如下颜色值，并做相应修改
-   ```
-   <!--APP主色调，主要影响加载条颜色、版本更新图片颜色，界面中的一些按钮、文字颜色需要指定该颜色方便以后修改-->
-   <color name="clr_main">#FF5500</color>
-   <!--页面背景色-->
-   <color name="clr_bg">#F2F2F2</color>
-   <!--Toolbar背景颜色-->
-   <color name="action_bg">@color/white</color>
-   <!--Toolbar标题文字颜色-->
-   <color name="action_title_color">#323232</color>
-   <!--Toolbar右侧菜单文字颜色-->
-   <color name="action_menu_color">#323232</color>
-   ```
-   * 按项目需要在dimens.xml文件中加上如下尺寸值，并做相应修改
-   ```
-   <!--标题栏标题文字字号-->
-   <dimen name="action_title_size">18sp</dimen>
-   <!--标题栏菜单文字字号-->
-   <dimen name="action_menu_size">16sp</dimen>
-   ```
+- 包名下创建BaseAty抽象类，继承BaseActivity类，该类中可实现一些针对项目通用的方法，其他Activity类继承BaseAty类
+- 包名下创建config包
+- 在config包下新建AppConfig类，实现IAppConfig接口，并实现其方法
+- 在config包下新建Urls类，实现IUrls接口，并实现其方法，此类为URL集合类，所有URL都需写在此类中以便管理
+- 在config包下新建User类，实现IUser接口，此类为用户信息实体类，框架中通过该实体类存储和读取用户信息
+- 在config包下新建DataSet类，继承BaseDataSet抽象类，把AppConfig、Urls、User当做元素传入，并实现其中抽象方法
+- 以上所述可参考原型库中的写法以单例模式实现
+- 按项目需要在colors.xml文件中加上如下颜色值，并做相应修改
+```
+<!--APP主色调，主要影响加载条颜色、版本更新图片颜色，界面中的一些按钮、文字颜色需要指定该颜色方便以后修改-->
+<color name="clr_main">#FF5500</color>
+<!--页面背景色-->
+<color name="clr_bg">#F2F2F2</color>
+<!--Toolbar背景颜色-->
+<color name="action_bg">@color/white</color>
+<!--Toolbar标题文字颜色-->
+<color name="action_title_color">#323232</color>
+<!--Toolbar右侧菜单文字颜色-->
+<color name="action_menu_color">#323232</color>
+```
+- 按项目需要在dimens.xml文件中加上如下尺寸值，并做相应修改
+```
+<!--标题栏标题文字字号-->
+<dimen name="action_title_size">18sp</dimen>
+<!--标题栏菜单文字字号-->
+<dimen name="action_menu_size">16sp</dimen>
+```
