@@ -21,7 +21,7 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //  主框架包
-    implementation 'com.github.toocms-library:Tab:5.0.0.200426-rc'
+    implementation 'com.github.toocms-library:Tab:5.0.0.200427-rc'
     // 兼容
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
