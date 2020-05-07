@@ -42,15 +42,9 @@ public class UpdateManager {
             TooCMSUpdateEntity result = GSONUtils.fromJson(json, TooCMSUpdateEntity.class);
             if (result != null) {
                 UpdateEntity entity = new UpdateEntity();
-                if (result.getData().getUpdate_status() == CheckVersionResult.NO_NEW_VERSION) {
-                    entity.setHasUpdate(false);
-                } else {
-                    if (result.getData().getUpdate_status() == CheckVersionResult.HAVE_NEW_VERSION_FORCED_UPLOAD) {
-                        entity.setForce(true);
-                    }
-                }
                 entity
-                        .setHasUpdate(true)
+                        .setHasUpdate(result.getData().getUpdate_status() != CheckVersionResult.NO_NEW_VERSION)
+                        .setForce(result.getData().getUpdate_status() == CheckVersionResult.HAVE_NEW_VERSION_FORCED_UPLOAD)
                         .setVersionCode(result.getData().getVersion_code())
                         .setVersionName(result.getData().getVersion_name())
                         .setUpdateContent(result.getData().getDescription().replaceAll("\\\\r\\\\n", "\r\n"))
