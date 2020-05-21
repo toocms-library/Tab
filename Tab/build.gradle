@@ -9,7 +9,7 @@ android {
         targetSdkVersion configs.targetSdkVersion
         versionCode configs.versionCode
         versionName configs.versionName
-//        multiDexEnabled = true
+        multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -44,18 +44,18 @@ dependencies {
     implementation "com.github.bumptech.glide:okhttp3-integration:${configs.version_glide}"
     // 网络请求
     implementation "com.lzy.net:okgo:${configs.version_okgo}"
-    //    implementation 'com.lzy.net:okserver:+'
     // 图片/视频选择
     implementation "com.github.LuckSiege.PictureSelector:picture_library:${configs.version_pictureselector}"
     // 适配
-    implementation 'me.jessyan:autosize:latest.integration'
+    implementation "me.jessyan:autosize:${configs.version_autosize}"
     // json解析
     implementation "com.google.code.gson:gson:${configs.version_gson}"
     // 注入
     implementation "com.jakewharton:butterknife:${configs.version_butterknife}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${configs.version_butterknife}"
-    //    // 友盟
-    implementation 'com.umeng.sdk:common:latest.integration'
-    implementation 'com.umeng.sdk:analytics:latest.integration'
-    //    implementation 'com.android.support:multidex:+'
+    // 友盟
+    implementation "com.umeng.umsdk:common:${configs.version_umeng_common}"
+    implementation "com.umeng.umsdk:analytics:${configs.version_umeng_analytics}"
+    // 分包
+    implementation "androidx.multidex:multidex:${configs.version_multidex}"
 }
