@@ -38,7 +38,6 @@ dependencies {
     implementation project(path: ':Network')
     implementation project(path: ':ToolKit')
     implementation "androidx.appcompat:appcompat:${configs.version_appcompat}"
-    implementation "com.google.android.material:material:${configs.version_material}"
     // 图片加载
     implementation "com.github.bumptech.glide:glide:${configs.version_glide}"
     annotationProcessor "com.github.bumptech.glide:compiler:${configs.version_glide}"

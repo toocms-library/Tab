@@ -38,7 +38,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -87,7 +86,7 @@ import static android.view.View.VISIBLE;
  * 指定的布局会通过{@link #setBasicContentView(int)}方法添加到{@link #content}中<br/><br/>
  * 2、若Toolbar无法实现需求则可以通过自定义标题栏来实现，自定义标题栏在XML中可以正常编写，但需在子类中重写{@link #getTitlebarResId()}
  * 方法，返回值为自定义标题栏的ID，实现方式是判断如果该方法返回值不为空的情况下把自定义标题栏的View从之前的Layout中移除，添加到自定义标题栏{@link #titlebar}
- * 中，否则将自定义标题栏{@link #titlebar}隐藏，同时也防止Toast的弹出方式为{@link Snackbar}的方式时弹出位置在自定义标题栏上方的问题<br/><br/>
+ * 中，否则将自定义标题栏{@link #titlebar}隐藏
  * 3、该类中的回调方法执行顺序如下：{@link #getLayoutResId()} -> {@link #initialized()} -> {@link #getPresenter()} -> {@link #onCreateActivity(Bundle)} -> {@link #requestData()}<br/><br/>
  * 4、<a href="http://twp.toocms.com/index.php/Blog/details/id/60">框架集成文档</a>
  *

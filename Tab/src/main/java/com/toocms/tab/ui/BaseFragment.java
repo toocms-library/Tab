@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout.LayoutParams;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,12 +17,9 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.lzy.okgo.OkGo;
 import com.toocms.tab.R;
 import com.toocms.tab.WeApplication;
-import com.toocms.tab.control.Toasty;
-import com.toocms.tab.toolkit.configs.IAppConfig;
 import com.toocms.tab.toolkit.permission.PermissionGen;
 import com.umeng.analytics.MobclickAgent;
 
