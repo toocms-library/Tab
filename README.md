@@ -4,7 +4,7 @@
 
 # Tab框架集成文档
 
-![Support](https://img.shields.io/badge/API-19+-4BC51D.svg)&#160;&#160;&#160;&#160;&#160;[![Tab Update](https://img.shields.io/badge/更新-记录-4BC51D.svg)](https://github.com/toocms-library/Tab/releases)&#160;&#160;&#160;&#160;&#160;![Author](https://img.shields.io/badge/Author-Zero-4BC51D.svg)
+[![](https://jitpack.io/v/toocms-library/Tab.svg)](https://jitpack.io/#toocms-library/Tab)&#160;&#160;&#160;&#160;&#160;![Support](https://img.shields.io/badge/API-19+-4BC51D.svg)&#160;&#160;&#160;&#160;&#160;[![Tab Update](https://img.shields.io/badge/更新-记录-4BC51D.svg)](https://github.com/toocms-library/Tab/releases)&#160;&#160;&#160;&#160;&#160;![Author](https://img.shields.io/badge/Author-Zero-4BC51D.svg)
 
 ## 添加Gradle依赖
 - 在项目根目录的build.gradle文件中添加
@@ -30,16 +30,16 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //  主框架包
-    implementation 'com.github.toocms-library:Tab:5.1.0'
+    implementation 'com.github.toocms-library:Tab:5.1.1'
     // 兼容
-    implementation 'androidx.appcompat:appcompat:1.3.0-alpha01'
-    implementation 'com.google.android.material:material:1.2.0-alpha06'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     //  图片加载
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.11.0'
     //  图片选择
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.6'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.8'
     //  网络请求
     implementation 'com.lzy.net:okgo:3.0.4'
     //  屏幕适配
