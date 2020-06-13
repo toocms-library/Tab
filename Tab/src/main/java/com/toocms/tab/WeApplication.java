@@ -4,8 +4,6 @@ import android.app.Application;
 import android.service.autofill.Dataset;
 import android.widget.Toast;
 
-import androidx.multidex.MultiDexApplication;
-
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -50,7 +48,7 @@ import static com.toocms.tab.control.update.entity.UpdateError.ERROR.CHECK_NO_NE
  * @version 1.0
  * @date 2014年7月31日
  */
-public class WeApplication extends MultiDexApplication {
+public class WeApplication extends Application {
 
     private final long REQUEST_TIMEOUT = 15000;      //网络请求超时时间
     private final String PREF_USERINFO = "user_info";

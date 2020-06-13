@@ -56,6 +56,4 @@ dependencies {
     // 友盟
     implementation "com.umeng.umsdk:common:${configs.version_umeng_common}"
     implementation "com.umeng.umsdk:analytics:${configs.version_umeng_analytics}"
-    // 分包
-    implementation "androidx.multidex:multidex:${configs.version_multidex}"
 }
