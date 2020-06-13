@@ -89,7 +89,7 @@ public class PictureAdderAdapter extends RecyclerView.Adapter<PictureAdderAdapte
             }
 
             long duration = media.getDuration();
-            holder.tvDuration.setVisibility(PictureMimeType.eqVideo(media.getMimeType())
+            holder.tvDuration.setVisibility(PictureMimeType.isHasVideo(media.getMimeType())
                     ? View.VISIBLE : View.GONE);
             if (chooseModel == PictureMimeType.ofAudio()) {
                 holder.tvDuration.setVisibility(View.VISIBLE);

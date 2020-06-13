@@ -33,6 +33,7 @@ dependencies {
     implementation project(path: ':Network')
     implementation project(path: ':ImageLoader')
     implementation "androidx.appcompat:appcompat:${configs.version_appcompat}"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:${configs.version_swiperefreshlayout}"
     implementation "com.google.android.material:material:${configs.version_material}"
     implementation "com.lzy.net:okgo:${configs.version_okgo}"
     implementation "com.google.code.gson:gson:${configs.version_gson}"
