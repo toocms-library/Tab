@@ -5,7 +5,7 @@ ext {
             minSdkVersion             : 19,
             targetSdkVersion          : 29,
             versionCode               : 20200613,
-            versionName               : "5.1.1",
+            versionName               : "5.1.2",
 
             //open version control
             version_appcompat         : "1.1.0",
