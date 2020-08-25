@@ -2,9 +2,13 @@ package com.toocms.tab.toolkit.permission;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AppOpsManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Binder;
 import android.os.Build;
+import android.os.Process;
 
 import androidx.fragment.app.Fragment;
 
@@ -143,7 +147,23 @@ public class PermissionGen {
         List<String> deniedPermissions = new ArrayList<>();
         for (int i = 0; i < grantResults.length; i++) {
             if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                deniedPermissions.add(permissions[i]);
+                // 请求权限失败之后再次通过ops验证是否真的获取失败，针对MIUI系统
+                Activity activity;
+                String packageName;
+                if (obj instanceof Activity) {
+                    activity = (Activity) obj;
+                    packageName = ((Activity) obj).getPackageName();
+                } else if (obj instanceof Fragment) {
+                    activity = ((Fragment) obj).getActivity();
+                    packageName = ((Fragment) obj).getActivity().getPackageName();
+                } else {
+                    throw new IllegalArgumentException(obj.getClass().getName() + " is not supported");
+                }
+                AppOpsManager appOpsManager = (AppOpsManager) activity.getSystemService(Context.APP_OPS_SERVICE);
+                int checkOps = appOpsManager.checkOp(permissions[i], Binder.getCallingUid(), packageName);
+                if (checkOps == AppOpsManager.MODE_IGNORED) {    // 依然是被拒绝授权
+                    deniedPermissions.add(permissions[i]);
+                }
             }
         }
 
