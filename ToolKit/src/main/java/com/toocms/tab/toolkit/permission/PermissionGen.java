@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Process;
 
 import androidx.fragment.app.Fragment;
 
