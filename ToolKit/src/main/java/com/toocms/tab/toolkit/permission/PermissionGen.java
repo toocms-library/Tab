@@ -146,7 +146,7 @@ public class PermissionGen {
         List<String> deniedPermissions = new ArrayList<>();
         for (int i = 0; i < grantResults.length; i++) {
             if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                // 请求权限失败之后再次通过ops验证是否真的获取失败，针对MIUI系统
+                // 请求权限失败之后再次通过应用操作的跟踪验证是否真的获取失败，针对MIUI、EMUI等系统
                 Activity activity;
                 String packageName;
                 if (obj instanceof Activity) {
@@ -158,10 +158,15 @@ public class PermissionGen {
                 } else {
                     throw new IllegalArgumentException(obj.getClass().getName() + " is not supported");
                 }
-                AppOpsManager appOpsManager = (AppOpsManager) activity.getSystemService(Context.APP_OPS_SERVICE);
-                int checkOps = appOpsManager.checkOp(permissions[i], Binder.getCallingUid(), packageName);
-                if (checkOps == AppOpsManager.MODE_IGNORED) {    // 依然是被拒绝授权
-                    deniedPermissions.add(permissions[i]);
+                try {
+                    AppOpsManager appOpsManager = (AppOpsManager) activity.getSystemService(Context.APP_OPS_SERVICE);
+                    int checkOps = appOpsManager.checkOp(permissions[i], Binder.getCallingUid(), packageName);
+                    // 依然是被拒绝授权
+                    if (checkOps == AppOpsManager.MODE_IGNORED) {
+                        deniedPermissions.add(permissions[i]);
+                    }
+                } catch (Exception ex) {
+                    continue;
                 }
             }
         }
