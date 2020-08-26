@@ -30,7 +30,7 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //  主框架包
-    implementation 'com.github.toocms-library:Tab:5.1.3'
+    implementation 'com.github.toocms-library:Tab:5.1.4'
     // 兼容
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
