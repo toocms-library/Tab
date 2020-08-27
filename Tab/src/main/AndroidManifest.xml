@@ -2,6 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.toocms.tab">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name=".WeApplication"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
