@@ -778,7 +778,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         PictureSelector.create(this)
                 .openGallery(chooseMode)    // 扫描文件类型
                 .setPictureWindowAnimationStyle(pictureStyle) // 相册启动退出动画
-                .loadImageEngine(GlideEngine.createGlideEngine())   // 图片加载引擎
+                .imageEngine(GlideEngine.createGlideEngine())   // 图片加载引擎
                 .isWithVideoImage(true) // 图片和视频是否可以同选,只在ofAll模式下有效
                 .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)  // 相册Activity方向
                 .isOriginalImageControl(false)  // 不显示原图控制按钮
@@ -787,10 +787,10 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
                 .renameCropFileName(System.currentTimeMillis() + ".0")    // 重命名裁剪文件名
                 .selectionMode(PictureConfig.SINGLE)    // 单选
                 .isSingleDirectReturn(true) // 裁剪之后直接返回
-                .enableCrop(true)   // 裁剪
-                .compress(true) // 压缩
+                .isEnableCrop(true)   // 裁剪
+                .isCompress(true) // 压缩
                 .withAspectRatio(aspect_ratio_x, aspect_ratio_y)    // 裁剪比例
-                .previewEggs(true)  // 预览图片时增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                .isPreviewEggs(true)  // 预览图片时增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                 .videoMaxSecond(videoMaxSecond) // 显示多少秒以内的视频or音频
                 .recordVideoSecond(recordVideoSecond)  //  视频录制秒数
                 .forResult(listener);   // 回调
@@ -848,7 +848,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         PictureSelector.create(this)
                 .openGallery(chooseMode)    // 扫描文件类型
                 .setPictureWindowAnimationStyle(pictureStyle) // 相册启动退出动画
-                .loadImageEngine(GlideEngine.createGlideEngine())   // 图片加载引擎
+                .imageEngine(GlideEngine.createGlideEngine())   // 图片加载引擎
                 .isWithVideoImage(true) // 图片和视频可以同时选则
                 .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)  // 相册Activity方向
                 .isOriginalImageControl(false)  // 不显示原图控制按钮
@@ -856,9 +856,9 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
                 .compressSavePath(FileManager.getCachePath())   //  压缩图片保存地址
                 .renameCompressFile(System.currentTimeMillis() + RandomUtils.getRandom(1000, 9999) + ".0")    // 重命名压缩文件名
                 .selectionMode(PictureConfig.MULTIPLE)    // 多选
-                .compress(true) // 压缩
-                .selectionMedia(selectionMedia) //  传入已选数据
-                .previewEggs(true)  // 预览图片时增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                .isCompress(true) // 压缩
+                .selectionData(selectionMedia) //  传入已选数据
+                .isPreviewEggs(true)  // 预览图片时增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                 .videoMaxSecond(videoMaxSecond) // 显示多少秒以内的视频or音频
                 .recordVideoSecond(recordVideoSecond)  //  视频录制秒数
                 .forResult(listener);   // 回调
