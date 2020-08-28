@@ -30,9 +30,9 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //  主框架包
-    implementation 'com.github.toocms-library:Tab:5.1.4'
+    implementation 'com.github.toocms-library:Tab:5.1.5'
     // 兼容
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     //  图片加载
     implementation 'com.github.bumptech.glide:glide:4.11.0'
@@ -47,11 +47,16 @@ dependencies {
     // json解析
     implementation 'com.google.code.gson:gson:2.8.6'
     //  View注入
-    implementation 'com.jakewharton:butterknife:10.2.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
     // 友盟
-    implementation 'com.umeng.umsdk:common:2.2.5'
-    implementation 'com.umeng.umsdk:analytics:8.1.6'
+    implementation 'com.umeng.umsdk:common:9.1.0'
+    implementation 'com.umeng.umsdk:asms:1.1.3'
+    implementation 'com.umeng.umsdk:crash:0.0.4'
+    implementation 'com.umeng.umsdk:oaid_lenovo:1.0.0'
+    implementation 'com.umeng.umsdk:oaid_mi:1.0.0'
+    implementation 'com.umeng.umsdk:oaid_oppo:1.0.4'
+    implementation 'com.umeng.umsdk:oaid_vivo:1.0.0.1'
     // 分包
     implementation 'androidx.multidex:multidex:2.0.1'
 }
