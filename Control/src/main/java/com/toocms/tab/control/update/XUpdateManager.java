@@ -1,22 +1,5 @@
-/*
- * Copyright (C) 2018 xuexiangjys(xuexiangjys@163.com)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.toocms.tab.control.update;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -333,10 +316,10 @@ public class XUpdateManager implements IUpdateProxy {
                 mIUpdateProxy.findNewVersion(updateEntity, updateProxy);
             } else {
                 if (mIUpdatePrompter instanceof DefaultUpdatePrompter) {
-                    if (mContext != null && !((Activity) mContext).isFinishing()) {
-                        mIUpdatePrompter.showPrompt(updateEntity, updateProxy, mPromptEntity);
-                    } else {
+                    if (mContext != null && mContext instanceof FragmentActivity && ((FragmentActivity) mContext).isFinishing()) {
                         _XUpdate.onUpdateError(PROMPT_ACTIVITY_DESTROY);
+                    } else {
+                        mIUpdatePrompter.showPrompt(updateEntity, updateProxy, mPromptEntity);
                     }
                 } else {
                     mIUpdatePrompter.showPrompt(updateEntity, updateProxy, mPromptEntity);
@@ -363,6 +346,7 @@ public class XUpdateManager implements IUpdateProxy {
     @Override
     public void startDownload(@NonNull UpdateEntity updateEntity, @Nullable OnFileDownloadListener downloadListener) {
         UpdateLog.i("开始下载更新文件:" + updateEntity);
+        updateEntity.setIUpdateHttpService(mIUpdateHttpService);
         if (mIUpdateProxy != null) {
             mIUpdateProxy.startDownload(updateEntity, downloadListener);
         } else {
@@ -391,6 +375,25 @@ public class XUpdateManager implements IUpdateProxy {
         } else {
             mIUpdateDownloader.cancelDownload();
         }
+    }
+
+    @Override
+    public void recycle() {
+        UpdateLog.d("正在回收资源...");
+        if (mIUpdateProxy != null) {
+            mIUpdateProxy.recycle();
+            mIUpdateProxy = null;
+        }
+        mContext = null;
+        if (mParams != null) {
+            mParams.clear();
+        }
+        mIUpdateHttpService = null;
+        mIUpdateChecker = null;
+        mIUpdateParser = null;
+        mIUpdateDownloader = null;
+        mOnFileDownloadListener = null;
+        mIUpdatePrompter = null;
     }
 
     //============================对外提供的自定义使用api===============================//
@@ -503,6 +506,7 @@ public class XUpdateManager implements IUpdateProxy {
 
             updateChecker = _XUpdate.getIUpdateChecker();
             updateParser = _XUpdate.getIUpdateParser();
+            updatePrompter = _XUpdate.getIUpdatePrompter();
             updateDownLoader = _XUpdate.getIUpdateDownLoader();
 
             isGet = _XUpdate.isGet();
@@ -603,7 +607,7 @@ public class XUpdateManager implements IUpdateProxy {
         /**
          * 设置版本更新检查器
          *
-         * @param updateChecker
+         * @param updateChecker 版本更新检查器
          * @return
          */
         public Builder updateChecker(@NonNull IUpdateChecker updateChecker) {
@@ -614,7 +618,7 @@ public class XUpdateManager implements IUpdateProxy {
         /**
          * 设置版本更新的解析器
          *
-         * @param updateParser
+         * @param updateParser 版本更新的解析器
          * @return
          */
         public Builder updateParser(@NonNull IUpdateParser updateParser) {
@@ -625,7 +629,7 @@ public class XUpdateManager implements IUpdateProxy {
         /**
          * 设置版本更新提示器
          *
-         * @param updatePrompter
+         * @param updatePrompter 版本更新提示器
          * @return
          */
         public Builder updatePrompter(@NonNull IUpdatePrompter updatePrompter) {
@@ -636,7 +640,7 @@ public class XUpdateManager implements IUpdateProxy {
         /**
          * 设置文件的下载监听
          *
-         * @param onFileDownloadListener
+         * @param onFileDownloadListener 文件下载监听
          * @return
          */
         public Builder setOnFileDownloadListener(OnFileDownloadListener onFileDownloadListener) {
@@ -647,7 +651,7 @@ public class XUpdateManager implements IUpdateProxy {
         /**
          * 设置主题颜色
          *
-         * @param themeColor
+         * @param themeColor 主题颜色资源
          * @return
          */
         @Deprecated
@@ -659,7 +663,7 @@ public class XUpdateManager implements IUpdateProxy {
         /**
          * 设置主题颜色
          *
-         * @param themeColor
+         * @param themeColor 主题颜色资源
          * @return
          */
         public Builder promptThemeColor(@ColorInt int themeColor) {
@@ -670,7 +674,7 @@ public class XUpdateManager implements IUpdateProxy {
         /**
          * 设置顶部背景图片
          *
-         * @param topResId
+         * @param topResId 顶部背景图片资源
          * @return
          */
         @Deprecated
@@ -682,11 +686,22 @@ public class XUpdateManager implements IUpdateProxy {
         /**
          * 设置顶部背景图片
          *
-         * @param topResId
+         * @param topResId 顶部背景图片资源
          * @return
          */
         public Builder promptTopResId(@DrawableRes int topResId) {
             promptEntity.setTopResId(topResId);
+            return this;
+        }
+
+        /**
+         * 设置按钮的文字颜色
+         *
+         * @param buttonTextColor 按钮的文字颜色
+         * @return
+         */
+        public Builder promptButtonTextColor(@ColorInt int buttonTextColor) {
+            promptEntity.setButtonTextColor(buttonTextColor);
             return this;
         }
 
@@ -724,6 +739,17 @@ public class XUpdateManager implements IUpdateProxy {
         }
 
         /**
+         * 设置版本更新提示器的样式
+         *
+         * @param promptEntity 版本更新提示器参数信息
+         * @return
+         */
+        public Builder promptStyle(@NonNull PromptEntity promptEntity) {
+            this.promptEntity = promptEntity;
+            return this;
+        }
+
+        /**
          * 设备版本更新下载器
          *
          * @param updateDownLoader
@@ -743,18 +769,8 @@ public class XUpdateManager implements IUpdateProxy {
             UpdateUtils.requireNonNull(this.context, "[UpdateManager.Builder] : context == null");
             UpdateUtils.requireNonNull(this.updateHttpService, "[UpdateManager.Builder] : updateHttpService == null");
 
-            if (this.updatePrompter == null) {
-                if (context instanceof FragmentActivity) {
-                    updatePrompter = new DefaultUpdatePrompter(((FragmentActivity) context).getSupportFragmentManager());
-                } else if (context instanceof Activity) {
-                    updatePrompter = new DefaultUpdatePrompter();
-                } else {
-                    throw new UnsupportedOperationException("[UpdateManager.Builder] : 使用默认的版本更新提示器，context必须传Activity！");
-                }
-            }
-
             if (TextUtils.isEmpty(apkCacheDir)) {
-                apkCacheDir = UpdateUtils.getDiskCacheDir(this.context, "xupdate");
+                apkCacheDir = UpdateUtils.getDefaultDiskCacheDirPath();
             }
             return new XUpdateManager(this);
         }

@@ -31,6 +31,7 @@ import com.toocms.tab.control.update.proxy.IUpdateChecker;
 import com.toocms.tab.control.update.proxy.IUpdateDownloader;
 import com.toocms.tab.control.update.proxy.IUpdateHttpService;
 import com.toocms.tab.control.update.proxy.IUpdateParser;
+import com.toocms.tab.control.update.proxy.IUpdatePrompter;
 import com.toocms.tab.control.update.proxy.impl.DefaultFileEncryptor;
 import com.toocms.tab.control.update.utils.ApkInstallUtils;
 
@@ -76,6 +77,10 @@ public final class _XUpdate {
 
     public static IUpdateParser getIUpdateParser() {
         return XUpdate.get().mIUpdateParser;
+    }
+
+    public static IUpdatePrompter getIUpdatePrompter() {
+        return XUpdate.get().mIUpdatePrompter;
     }
 
     public static IUpdateDownloader getIUpdateDownLoader() {
@@ -218,5 +223,4 @@ public final class _XUpdate {
         }
         XUpdate.get().mOnUpdateFailureListener.onFailure(updateError);
     }
-
 }

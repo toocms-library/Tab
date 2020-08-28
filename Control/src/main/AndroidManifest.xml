@@ -24,5 +24,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/update_file_paths" />
         </provider>
+
+        <activity
+            android:name="com.toocms.tab.control.update.widget.UpdateDialogActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation|keyboard"
+            android:theme="@style/XUpdate_DialogTheme" />
     </application>
 </manifest>

@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2018 xuexiangjys(xuexiangjys@163.com)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.toocms.tab.control.update.utils;
 
 import android.annotation.SuppressLint;
@@ -38,6 +22,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.toocms.tab.control.R;
+import com.toocms.tab.control.update.XUpdate;
 import com.toocms.tab.control.update._XUpdate;
 import com.toocms.tab.control.update.entity.UpdateEntity;
 import com.toocms.tab.control.update.proxy.IUpdateProxy;
@@ -60,6 +45,8 @@ public final class UpdateUtils {
 
     private static final String IGNORE_VERSION = "xupdate_ignore_version";
     private static final String PREFS_FILE = "xupdate_prefs";
+
+    private static final String KEY_XUPDATE = "xupdate";
 
     private UpdateUtils() {
         throw new UnsupportedOperationException("cannot be instantiated");
@@ -337,7 +324,7 @@ public final class UpdateUtils {
     public static boolean isApkDownloaded(UpdateEntity updateEntity) {
         File appFile = getApkFileByUpdateEntity(updateEntity);
         return !TextUtils.isEmpty(updateEntity.getMd5())
-                && appFile.exists()
+                && FileUtils.isFileExists(appFile)
                 && _XUpdate.isFileValid(updateEntity.getMd5(), appFile);
     }
 
@@ -363,11 +350,11 @@ public final class UpdateUtils {
     @NonNull
     public static String getApkNameByDownloadUrl(String downloadUrl) {
         if (TextUtils.isEmpty(downloadUrl)) {
-            return "temp.apk";
+            return "temp_" + System.currentTimeMillis() + ".apk";
         } else {
             String appName = downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1);
             if (!appName.endsWith(".apk")) {
-                appName = "temp.apk";
+                appName = "temp_" + System.currentTimeMillis() + ".apk";
             }
             return appName;
         }
@@ -386,6 +373,30 @@ public final class UpdateUtils {
             cachePath = context.getCacheDir().getPath();
         }
         return cachePath + File.separator + uniqueName;
+    }
+
+    /**
+     * @return 版本更新的默认缓存路径
+     */
+    public static File getDefaultDiskCacheDir() {
+        return FileUtils.getFileByPath(getDefaultDiskCacheDirPath());
+    }
+
+    /**
+     * ApkCacheDir是否是私有目录
+     *
+     * @param updateEntity 版本更新信息实体
+     * @return
+     */
+    public static boolean isPrivateApkCacheDir(@NonNull UpdateEntity updateEntity) {
+        return FileUtils.isPrivatePath(XUpdate.getContext(), updateEntity.getApkCacheDir());
+    }
+
+    /**
+     * @return 版本更新的默认缓存路径
+     */
+    public static String getDefaultDiskCacheDirPath() {
+        return UpdateUtils.getDiskCacheDir(XUpdate.getContext(), KEY_XUPDATE);
     }
 
     private static boolean isSDCardEnable() {

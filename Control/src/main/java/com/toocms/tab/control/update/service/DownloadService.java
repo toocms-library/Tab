@@ -40,6 +40,7 @@ import com.toocms.tab.control.update.entity.UpdateEntity;
 import com.toocms.tab.control.update.logs.UpdateLog;
 import com.toocms.tab.control.update.proxy.IUpdateHttpService;
 import com.toocms.tab.control.update.utils.ApkInstallUtils;
+import com.toocms.tab.control.update.utils.FileUtils;
 import com.toocms.tab.control.update.utils.UpdateUtils;
 
 import java.io.File;
@@ -103,7 +104,6 @@ public class DownloadService extends Service {
     }
 
     //=====================生命周期============================//
-
     /**
      * 下载服务是否在运行
      *
@@ -116,7 +116,7 @@ public class DownloadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager) getSystemService(android.content.Context.NOTIFICATION_SERVICE);
     }
 
     @Nullable
@@ -198,12 +198,11 @@ public class DownloadService extends Service {
         private FileDownloadCallBack mFileDownloadCallBack;
 
         private UpdateEntity mUpdateEntity;
-
         /**
          * 开始下载
          *
-         * @param updateEntity     新app信息
-         * @param downloadListener 下载监听
+         * @param updateEntity      新app信息
+         * @param downloadListener  下载监听
          */
         public void start(@NonNull UpdateEntity updateEntity, @Nullable OnFileDownloadListener downloadListener) {
             //下载
@@ -246,9 +245,16 @@ public class DownloadService extends Service {
         }
         String apkName = UpdateUtils.getApkNameByDownloadUrl(apkUrl);
 
-        File apkCacheDir = new File(updateEntity.getApkCacheDir());
-        if (!apkCacheDir.exists()) {
-            apkCacheDir.mkdirs();
+        File apkCacheDir = FileUtils.getFileByPath(updateEntity.getApkCacheDir());
+        if (apkCacheDir == null) {
+            apkCacheDir = UpdateUtils.getDefaultDiskCacheDir();
+        }
+        try {
+            if (!FileUtils.isFileExists(apkCacheDir)) {
+                apkCacheDir.mkdirs();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         String target = apkCacheDir + File.separator + updateEntity.getVersionName();
@@ -394,7 +400,7 @@ public class DownloadService extends Service {
     private void showDownloadCompleteNotification(File file) {
         //App后台运行
         //更新参数,注意flags要使用FLAG_UPDATE_CURRENT
-        Intent installAppIntent = ApkInstallUtils.getInstallAppIntent(DownloadService.this, file);
+        Intent installAppIntent = ApkInstallUtils.getInstallAppIntent(file);
         PendingIntent contentIntent = PendingIntent.getActivity(DownloadService.this, 0, installAppIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (mBuilder == null) {
             mBuilder = getNotificationBuilder();

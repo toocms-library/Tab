@@ -45,5 +45,4 @@ public abstract class AbstractUpdateProxy implements IUpdateProxy {
     public void noNewVersion(@NonNull Throwable throwable) {
         _XUpdate.onUpdateError(CHECK_NO_NEW_VERSION, throwable.getMessage());
     }
-
 }

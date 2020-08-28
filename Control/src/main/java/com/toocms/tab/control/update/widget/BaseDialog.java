@@ -39,6 +39,7 @@ import com.toocms.tab.control.R;
  * @since 2018/7/24 上午9:34
  */
 public abstract class BaseDialog extends AppCompatDialog {
+
     private View mContentView;
 
     public BaseDialog(Context context, int layoutId) {

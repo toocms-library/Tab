@@ -39,7 +39,7 @@ import com.toocms.tab.control.R;
 import com.toocms.tab.control.update._XUpdate;
 import com.toocms.tab.control.update.entity.PromptEntity;
 import com.toocms.tab.control.update.entity.UpdateEntity;
-import com.toocms.tab.control.update.proxy.IUpdateProxy;
+import com.toocms.tab.control.update.proxy.IPrompterProxy;
 import com.toocms.tab.control.update.service.OnFileDownloadListener;
 import com.toocms.tab.control.update.utils.ColorUtils;
 import com.toocms.tab.control.update.utils.DrawableUtils;
@@ -102,7 +102,7 @@ public class UpdateDialog extends BaseDialog implements View.OnClickListener {
     /**
      * 更新代理
      */
-    private IUpdateProxy mIUpdateProxy;
+    private IPrompterProxy mIPrompterProxy;
     /**
      * 提示器参数信息
      */
@@ -111,17 +111,17 @@ public class UpdateDialog extends BaseDialog implements View.OnClickListener {
     /**
      * 获取更新提示
      *
-     * @param updateEntity 更新信息
-     * @param updateProxy  更新代理
-     * @param promptEntity 提示器参数信息
+     * @param updateEntity  更新信息
+     * @param prompterProxy 更新代理
+     * @param promptEntity  提示器参数信息
      * @return
      */
-    public static UpdateDialog newInstance(@NonNull UpdateEntity updateEntity, @NonNull IUpdateProxy updateProxy, PromptEntity promptEntity) {
-        UpdateDialog dialog = new UpdateDialog(updateProxy.getContext());
-        dialog.setIUpdateProxy(updateProxy)
+    public static UpdateDialog newInstance(@NonNull Context context, @NonNull UpdateEntity updateEntity, @NonNull IPrompterProxy prompterProxy, PromptEntity promptEntity) {
+        UpdateDialog dialog = new UpdateDialog(context);
+        dialog.setIPrompterProxy(prompterProxy)
                 .setUpdateEntity(updateEntity)
                 .setPromptEntity(promptEntity);
-        dialog.initTheme(promptEntity.getThemeColor(), promptEntity.getTopResId(), promptEntity.getWidthRatio(), promptEntity.getHeightRatio());
+        dialog.initTheme(promptEntity.getThemeColor(), promptEntity.getTopResId(), promptEntity.getButtonTextColor(), promptEntity.getWidthRatio(), promptEntity.getHeightRatio());
         return dialog;
     }
 
@@ -179,6 +179,10 @@ public class UpdateDialog extends BaseDialog implements View.OnClickListener {
     @Override
     public void dismiss() {
         _XUpdate.setIsShowUpdatePrompter(false);
+        if (mIPrompterProxy != null) {
+            mIPrompterProxy.recycle();
+            mIPrompterProxy = null;
+        }
         super.dismiss();
     }
 
@@ -222,14 +226,17 @@ public class UpdateDialog extends BaseDialog implements View.OnClickListener {
     /**
      * 初始化主题色
      */
-    private void initTheme(@ColorInt int themeColor, @DrawableRes int topResId, float widthRatio, float heightRatio) {
+    private void initTheme(@ColorInt int themeColor, @DrawableRes int topResId, @ColorInt int buttonTextColor, float widthRatio, float heightRatio) {
         if (themeColor == -1) {
             themeColor = ColorUtils.getColor(getContext(), R.color.xupdate_default_theme_color);
         }
         if (topResId == -1) {
             topResId = R.drawable.xupdate_bg_app_top;
         }
-        setDialogTheme(themeColor, topResId, widthRatio, heightRatio);
+        if (buttonTextColor == 0) {
+            buttonTextColor = ColorUtils.isColorDark(themeColor) ? Color.WHITE : Color.BLACK;
+        }
+        setDialogTheme(themeColor, topResId, buttonTextColor, widthRatio, heightRatio);
     }
 
     /**
@@ -238,14 +245,14 @@ public class UpdateDialog extends BaseDialog implements View.OnClickListener {
      * @param themeColor 主色
      * @param topResId   图片
      */
-    private void setDialogTheme(int themeColor, int topResId, float widthRatio, float heightRatio) {
+    private void setDialogTheme(int themeColor, int topResId, int buttonTextColor, float widthRatio, float heightRatio) {
         mIvTop.setImageResource(topResId);
-        mBtnUpdate.setBackgroundDrawable(DrawableUtils.getDrawable(UpdateUtils.dip2px(4, getContext()), themeColor));
-        mBtnBackgroundUpdate.setBackgroundDrawable(DrawableUtils.getDrawable(UpdateUtils.dip2px(4, getContext()), themeColor));
+        DrawableUtils.setBackgroundCompat(mBtnUpdate, DrawableUtils.getDrawable(UpdateUtils.dip2px(4, getContext()), themeColor));
+        DrawableUtils.setBackgroundCompat(mBtnBackgroundUpdate, DrawableUtils.getDrawable(UpdateUtils.dip2px(4, getContext()), themeColor));
         mNumberProgressBar.setProgressTextColor(themeColor);
         mNumberProgressBar.setReachedBarColor(themeColor);
-        //随背景颜色变化
-        mBtnUpdate.setTextColor(ColorUtils.isColorDark(themeColor) ? Color.WHITE : Color.BLACK);
+        mBtnUpdate.setTextColor(buttonTextColor);
+        mBtnBackgroundUpdate.setTextColor(buttonTextColor);
 
         Window window = getWindow();
         if (window != null) {
@@ -263,8 +270,8 @@ public class UpdateDialog extends BaseDialog implements View.OnClickListener {
 
     //====================更新功能============================//
 
-    public UpdateDialog setIUpdateProxy(IUpdateProxy updateProxy) {
-        mIUpdateProxy = updateProxy;
+    public UpdateDialog setIPrompterProxy(IPrompterProxy prompterProxy) {
+        mIPrompterProxy = prompterProxy;
         return this;
     }
 
@@ -275,18 +282,18 @@ public class UpdateDialog extends BaseDialog implements View.OnClickListener {
         if (i == R.id.btn_update) {
             //权限判断是否有访问外部存储空间权限
             int flag = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (flag != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) mIUpdateProxy.getContext(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_REQUEST_PERMISSIONS);
+            if (!UpdateUtils.isPrivateApkCacheDir(mUpdateEntity) && flag != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) getContext(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_REQUEST_PERMISSIONS);
             } else {
                 installApp();
             }
         } else if (i == R.id.btn_background_update) {
             //点击后台更新按钮
-            mIUpdateProxy.backgroundDownload();
+            mIPrompterProxy.backgroundDownload();
             dismiss();
         } else if (i == R.id.iv_close) {
             //点击关闭按钮
-            mIUpdateProxy.cancelDownload();
+            mIPrompterProxy.cancelDownload();
             dismiss();
         } else if (i == R.id.tv_ignore) {
             //点击忽略按钮
@@ -306,8 +313,8 @@ public class UpdateDialog extends BaseDialog implements View.OnClickListener {
                 showInstallButton(UpdateUtils.getApkFileByUpdateEntity(mUpdateEntity));
             }
         } else {
-            if (mIUpdateProxy != null) {
-                mIUpdateProxy.startDownload(mUpdateEntity, mOnFileDownloadListener);
+            if (mIPrompterProxy != null) {
+                mIPrompterProxy.startDownload(mUpdateEntity, mOnFileDownloadListener);
             }
             //忽略版本在点击更新按钮后隐藏
             if (mUpdateEntity.isIgnorable()) {

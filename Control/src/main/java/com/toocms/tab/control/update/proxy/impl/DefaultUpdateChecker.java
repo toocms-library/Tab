@@ -140,6 +140,4 @@ public class DefaultUpdateChecker implements IUpdateChecker {
             _XUpdate.onUpdateError(CHECK_PARSE, e.getMessage());
         }
     }
-
-
 }

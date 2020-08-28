@@ -16,14 +16,17 @@
 
 package com.toocms.tab.control.update.proxy.impl;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentActivity;
 
 import com.toocms.tab.control.update.entity.PromptEntity;
 import com.toocms.tab.control.update.entity.UpdateEntity;
+import com.toocms.tab.control.update.logs.UpdateLog;
 import com.toocms.tab.control.update.proxy.IUpdatePrompter;
 import com.toocms.tab.control.update.proxy.IUpdateProxy;
-import com.toocms.tab.control.update.widget.UpdateDialog;
+import com.toocms.tab.control.update.widget.UpdateDialogActivity;
 import com.toocms.tab.control.update.widget.UpdateDialogFragment;
 
 /**
@@ -34,23 +37,6 @@ import com.toocms.tab.control.update.widget.UpdateDialogFragment;
  */
 public class DefaultUpdatePrompter implements IUpdatePrompter {
 
-    private FragmentManager mFragmentManager;
-
-    /**
-     * 使用默认Dialog
-     */
-    public DefaultUpdatePrompter() {
-    }
-
-    /**
-     * 使用FragmentDialog
-     *
-     * @param manager
-     */
-    public DefaultUpdatePrompter(@NonNull FragmentManager manager) {
-        mFragmentManager = manager;
-    }
-
     /**
      * 显示版本更新提示
      *
@@ -60,12 +46,15 @@ public class DefaultUpdatePrompter implements IUpdatePrompter {
      */
     @Override
     public void showPrompt(@NonNull UpdateEntity updateEntity, @NonNull IUpdateProxy updateProxy, @NonNull PromptEntity promptEntity) {
-        if (mFragmentManager != null) {
-            UpdateDialogFragment.newInstance(updateEntity, updateProxy, promptEntity)
-                    .show(mFragmentManager);
+        Context context = updateProxy.getContext();
+        if (context == null) {
+            UpdateLog.e("showPrompt failed, context is null!");
+            return;
+        }
+        if (context instanceof FragmentActivity) {
+            UpdateDialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(), updateEntity, new DefaultPrompterProxyImpl(updateProxy), promptEntity);
         } else {
-            UpdateDialog.newInstance(updateEntity, updateProxy, promptEntity)
-                    .show();
+            UpdateDialogActivity.show(context, updateEntity, new DefaultPrompterProxyImpl(updateProxy), promptEntity);
         }
     }
 }

@@ -51,8 +51,8 @@ public class DefaultInstallListener implements OnInstallListener {
     /**
      * 检验apk文件的有效性（默认是使用MD5进行校验,可重写该方法）
      *
-     * @param downloadEntity
-     * @param apkFile
+     * @param downloadEntity 下载信息实体
+     * @param apkFile        apk文件
      * @return
      */
     protected boolean checkApkFile(DownloadEntity downloadEntity, @NonNull File apkFile) {

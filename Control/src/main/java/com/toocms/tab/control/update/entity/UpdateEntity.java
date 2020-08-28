@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2018 xuexiangjys(xuexiangjys@163.com)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.toocms.tab.control.update.entity;
 
 import android.os.Parcel;
@@ -31,6 +15,7 @@ import com.toocms.tab.control.update.proxy.IUpdateHttpService;
  * @since 2018/6/29 下午9:33
  */
 public class UpdateEntity implements Parcelable {
+
     //===========是否可以升级=============//
     /**
      * 是否有新版本
@@ -122,7 +107,8 @@ public class UpdateEntity implements Parcelable {
 
     public UpdateEntity setForce(boolean force) {
         if (force) {
-            mIsIgnorable = false; //强制更新，不可以忽略
+            //强制更新，不可以忽略
+            mIsIgnorable = false;
         }
         mIsForce = force;
         return this;
@@ -134,7 +120,8 @@ public class UpdateEntity implements Parcelable {
 
     public UpdateEntity setIsIgnorable(boolean isIgnorable) {
         if (isIgnorable) {
-            mIsForce = false;  //可忽略的，不能是强制更新
+            //可忽略的，不能是强制更新
+            mIsForce = false;
         }
         mIsIgnorable = isIgnorable;
         return this;
@@ -178,9 +165,12 @@ public class UpdateEntity implements Parcelable {
      */
     public void setIsAutoMode(boolean isAutoMode) {
         if (isAutoMode) {
-            mIsSilent = true;  //自动下载
-            mIsAutoInstall = true; //自动安装
-            mDownloadEntity.setShowNotification(true); //自动模式下，默认下载进度条在通知栏显示
+            //自动下载
+            mIsSilent = true;
+            //自动安装
+            mIsAutoInstall = true;
+            //自动模式下，默认下载进度条在通知栏显示
+            mDownloadEntity.setShowNotification(true);
         }
     }
 
