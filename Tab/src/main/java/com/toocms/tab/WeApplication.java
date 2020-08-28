@@ -32,6 +32,7 @@ import com.toocms.tab.toolkit.Toolkit;
 import com.toocms.tab.toolkit.configs.IUser;
 import com.toocms.tab.toolkit.configs.Settings;
 import com.toocms.tab.toolkit.x;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 
 import java.util.Map;
@@ -101,6 +102,8 @@ public class WeApplication extends MultiDexApplication {
                 "Umeng",
                 UMConfigure.DEVICE_TYPE_PHONE,
                 x.dataSet().getAppConfig().getUmengPushSecret());
+        // 设置自动页面采集模式
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
         // 开启打印日志
         try {
             UMConfigure.setLogEnabled(!CrashConfig.isAllowReportToHost());
@@ -200,6 +203,7 @@ public class WeApplication extends MultiDexApplication {
     }
 
     private void finish() {
+        MobclickAgent.onKillProcess(this);
         // 关闭程序运行的所有activity
         AppManager.getInstance().AppExit(this);
         // 调用系统垃圾处理

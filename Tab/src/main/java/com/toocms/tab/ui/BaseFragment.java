@@ -21,7 +21,6 @@ import com.lzy.okgo.OkGo;
 import com.toocms.tab.R;
 import com.toocms.tab.WeApplication;
 import com.toocms.tab.toolkit.permission.PermissionGen;
-import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
 
@@ -118,18 +117,6 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
             isVisible = false;
             onInvisible();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        MobclickAgent.onPageStart(this.getClass().getSimpleName());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        MobclickAgent.onPageEnd(this.getClass().getSimpleName());
     }
 
     @Override

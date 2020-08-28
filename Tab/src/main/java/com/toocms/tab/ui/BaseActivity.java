@@ -63,7 +63,6 @@ import com.toocms.tab.toolkit.configs.IAppConfig;
 import com.toocms.tab.toolkit.permission.PermissionGen;
 import com.toocms.tab.toolkit.x;
 import com.toocms.tab.ui.FragmentParam.TYPE;
-import com.umeng.analytics.MobclickAgent;
 
 import java.io.InterruptedIOException;
 import java.net.SocketException;
@@ -284,22 +283,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
         // 设置分割线显示
         if (getTitlebarResId() != 0 || mActionBar.isShowing())
             divider.setVisibility(VISIBLE);
-        // 统计页面
-        MobclickAgent.onPageStart(this.getClass().getSimpleName());
-        // 统计时长
-        MobclickAgent.onResume(this);
         resetShowContent();
-    }
-
-    /**
-     * Activity的onPause生命周期<br/>
-     * 其中实现：友盟页面时长统计暂停<br/>
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-        MobclickAgent.onPageEnd(this.getClass().getSimpleName());
-        MobclickAgent.onPause(this);
     }
 
     /**
