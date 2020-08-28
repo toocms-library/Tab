@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.toocms.tab.R;
 import com.toocms.tab.toolkit.AppManager;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
 
@@ -67,6 +68,7 @@ public class CrashReport implements Thread.UncaughtExceptionHandler {
                 handleException(ex);
                 Thread.sleep(2500);
                 // 退出程序
+                MobclickAgent.onKillProcess(mApp);
                 AppManager.getInstance().AppExit(mApp);
                 android.os.Process.killProcess(android.os.Process.myPid());
                 System.exit(1);
