@@ -28,9 +28,8 @@ allprojects {
 - 在模块目录下的build.gradle文件的dependencies添加
 ```
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
     //  主框架包
-    implementation 'com.github.toocms-library:Tab:5.1.5'
+    implementation 'com.github.toocms-library:Tab:5.1.6'
     // 兼容
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
