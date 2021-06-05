@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Control/Control.iml" filepath="$PROJECT_DIR$/Control/Control.iml" group="Tab/Control" />
-      <module fileurl="file://$PROJECT_DIR$/ImageLoader/ImageLoader.iml" filepath="$PROJECT_DIR$/ImageLoader/ImageLoader.iml" group="Tab/ImageLoader" />
-      <module fileurl="file://$PROJECT_DIR$/Network/Network.iml" filepath="$PROJECT_DIR$/Network/Network.iml" group="Tab/Network" />
-      <module fileurl="file://$PROJECT_DIR$/Tab/Tab-Tab.iml" filepath="$PROJECT_DIR$/Tab/Tab-Tab.iml" group="Tab/Tab" />
-      <module fileurl="file://$PROJECT_DIR$/ToolKit/ToolKit.iml" filepath="$PROJECT_DIR$/ToolKit/ToolKit.iml" group="Tab/ToolKit" />
-      <module fileurl="file://$PROJECT_DIR$/Zero-Tab.iml" filepath="$PROJECT_DIR$/Zero-Tab.iml" group="Tab" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Tab.iml" filepath="$PROJECT_DIR$/.idea/modules/Tab.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Control/Tab.Control.iml" filepath="$PROJECT_DIR$/.idea/modules/Control/Tab.Control.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ImageLoader/Tab.ImageLoader.iml" filepath="$PROJECT_DIR$/.idea/modules/ImageLoader/Tab.ImageLoader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Network/Tab.Network.iml" filepath="$PROJECT_DIR$/.idea/modules/Network/Tab.Network.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Tab/Tab.Tab.iml" filepath="$PROJECT_DIR$/.idea/modules/Tab/Tab.Tab.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ToolKit/Tab.ToolKit.iml" filepath="$PROJECT_DIR$/.idea/modules/ToolKit/Tab.ToolKit.iml" />
     </modules>
   </component>
 </project>

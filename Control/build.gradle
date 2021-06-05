@@ -37,5 +37,5 @@ dependencies {
     implementation "com.google.android.material:material:${configs.version_material}"
     implementation "com.lzy.net:okgo:${configs.version_okgo}"
     implementation "com.google.code.gson:gson:${configs.version_gson}"
-    implementation "com.github.LuckSiege.PictureSelector:picture_library:${configs.version_pictureselector}"
+    implementation "io.github.lucksiege:pictureselector:${configs.version_pictureselector}"
 }

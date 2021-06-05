@@ -45,7 +45,7 @@ dependencies {
     // 网络请求
     implementation "com.lzy.net:okgo:${configs.version_okgo}"
     // 图片/视频选择
-    implementation "com.github.LuckSiege.PictureSelector:picture_library:${configs.version_pictureselector}"
+    implementation "io.github.lucksiege:pictureselector:${configs.version_pictureselector}"
     // 适配
     implementation "me.jessyan:autosize:${configs.version_autosize}"
     // json解析
@@ -56,11 +56,6 @@ dependencies {
     // 友盟
     implementation "com.umeng.umsdk:common:${configs.version_umeng_common}"
     implementation "com.umeng.umsdk:asms:${configs.version_umeng_asms}"
-    implementation "com.umeng.umsdk:crash:${configs.version_umeng_crash}"
-    implementation "com.umeng.umsdk:oaid_lenovo:${configs.version_umeng_oaid_lenovo}"
-    implementation "com.umeng.umsdk:oaid_mi:${configs.version_umeng_oaid_mi}"
-    implementation "com.umeng.umsdk:oaid_oppo:${configs.version_umeng_oaid_oppo}"
-    implementation "com.umeng.umsdk:oaid_vivo:${configs.version_umeng_oaid_vivo}"
     // 分包
     implementation "androidx.multidex:multidex:${configs.version_multidex}"
 }
