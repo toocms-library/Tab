@@ -33,4 +33,11 @@ public interface IAppConfig {
      * 在WeApplication中做第三方Jar包的初始化操作
      */
     void initJarForWeApplication(Application application);
+
+    /**
+     * 是否初始化三方SDK（包括initJarForWeApplication回调方法）
+     *
+     * @return
+     */
+    boolean isInitializationSDK();
 }

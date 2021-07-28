@@ -96,35 +96,19 @@ public class WeApplication extends MultiDexApplication {
         initOkGo();
         // 初始化崩溃异常捕捉器
         CrashReport.init(this);
-        // 初始化Umeng
-        UMConfigure.init(this,
-                x.dataSet().getAppConfig().getUmengAppkey(),
-                "Umeng",
-                UMConfigure.DEVICE_TYPE_PHONE,
-                x.dataSet().getAppConfig().getUmengPushSecret());
-        // 设置自动页面采集模式
-        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
-        // 开启打印日志
-        try {
-            UMConfigure.setLogEnabled(!CrashConfig.isAllowReportToHost());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // 初始化更新
         initUpdate();
-        // 初始化第三方Jar包
-        x.dataSet().getAppConfig().initJarForWeApplication(this);
         // 验证可用性
         VerificationService.getInstance().verification();
         // 初始化数据线程
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // 初始化信息
-                start();
-                // 初始化用户信息
-                initUserInfo();
-            }
+        new Thread(() -> {
+            // 初始化信息
+            start();
+            // 初始化用户信息
+            initUserInfo();
         }).start();
+        // 先判断是否初始化三方SDK
+        if (x.dataSet().getAppConfig().isInitializationSDK()) initializationSDK();
     }
 
     /**
@@ -251,5 +235,24 @@ public class WeApplication extends MultiDexApplication {
     public void clearUserInfo() {
         user = null;
         PreferencesUtils.putString(this, PREF_USERINFO, "");
+    }
+
+    public void initializationSDK() {
+        // 初始化Umeng
+        UMConfigure.init(this,
+                x.dataSet().getAppConfig().getUmengAppkey(),
+                "Umeng",
+                UMConfigure.DEVICE_TYPE_PHONE,
+                x.dataSet().getAppConfig().getUmengPushSecret());
+        // 设置自动页面采集模式
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
+        // 开启打印日志
+        try {
+            UMConfigure.setLogEnabled(!CrashConfig.isAllowReportToHost());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 初始化第三方Jar包
+        x.dataSet().getAppConfig().initJarForWeApplication(this);
     }
 }
