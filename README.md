@@ -29,7 +29,7 @@ allprojects {
 ```
 dependencies {
     //  主框架包
-    implementation 'com.github.toocms-library:Tab:5.1.6'
+    implementation 'com.github.toocms-library:Tab:5.1.8'
     // 兼容
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
